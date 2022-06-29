@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MovieController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register-user',[AuthController::class,'create']);
-Route::post('/login',[AuthController::class,'login']);
-
+Route::post('/register-user', [AuthController::class, 'create'])->name('signup');
+Route::post('/login', [AuthController::class, 'login'])->name('signin');
+Route::get('/all-movies', [MovieController::class, 'show'])->name('all.movies');

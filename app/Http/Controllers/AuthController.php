@@ -9,39 +9,32 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api', ['except' => ['login']]);
-    // }
     public function create(RegisterRequest $request)
     {
         $attributes = $request->validated();
-        $user=User::create($attributes);
-        return ['success'=>true,'user_id'=>$user->id];
+        $user = User::create($attributes);
+        return response()->json(['success' => true, 'user_id' => $user->id], 200);
     }
     public function login(Request $request)
     {
         $login = $request->name;
 
-		$nameOrEmail = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        $nameOrEmail = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
-		$request->merge([$nameOrEmail => $login]);
+        $request->merge([$nameOrEmail => $login]);
 
         $credentials = $request->only([$nameOrEmail, 'password']);
-        
+
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Email or password is incorrect,check your credentials.'], 401);
+        } elseif (Auth::attempt($credentials)) {
+            return $this->respondWithToken($token, $request);
         }
-        
-        return $this->respondWithToken($token,$request);
     }
-    protected function respondWithToken($token,$request)
+    protected function respondWithToken($token)
     {
-        $user = User::where('name', 'LIKE', "%{$request->name}%") 
-        ->orWhere('email', 'LIKE', "%{$request->name}%")
-        ->first();
         return response()->json([
-            'user_id'=>$user->id,
+            'user_id' => auth()->user()->id,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
