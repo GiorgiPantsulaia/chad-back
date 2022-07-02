@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
+$guarded = ['id'];
+
+
 class Movie extends Model
 {
     use HasFactory;
@@ -13,11 +17,6 @@ class Movie extends Model
 	{
 		return $this->hasMany(Quote::class);
 	}
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
 
     public function author()
     {

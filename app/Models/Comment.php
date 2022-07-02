@@ -9,9 +9,9 @@ class Comment extends Model
 {
     use HasFactory;
 
-    public function movie()
+    public function quote()
     {
-        return $this->belongsTo(Movie::class);
+        return $this->belongsTo(Quote::class,'quote_id');
     }
     public function author()
     {

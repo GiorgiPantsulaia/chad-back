@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\QuoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register-user', [AuthController::class, 'create'])->name('signup');
 Route::post('/login', [AuthController::class, 'login'])->name('signin');
+Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 Route::get('/all-movies', [MovieController::class, 'show'])->name('all.movies');
+Route::get('/all-quotes',[QuoteController::class,'index'])->name('all.quotes');

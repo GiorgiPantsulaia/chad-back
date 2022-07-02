@@ -9,6 +9,6 @@ class MovieController extends Controller
 {
     public function show()
     {
-        return Movie::all();
+        return Movie::paginate(5);
     }
 }
