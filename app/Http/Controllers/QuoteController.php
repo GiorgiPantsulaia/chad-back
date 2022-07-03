@@ -1,13 +1,40 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Comment;
 use App\Models\Quote;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuoteController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     public function index()
     {
-        return Quote::with('movie')->with('author')->paginate(5);
+        return response()->json(['data'=>Quote::latest()->with('movie')->with('author')->with('comments.author')->paginate(5)]) ;
+    }
+
+    public function likePost(Request $request)
+    {
+        Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number+1'), ]);
+        return response()->json(['success'=>'post has been liked'], 200);
+        // $user = User::find(auth()->user()->id);
+        // $user->liked_posts=array_merge($user->liked_posts, array($request->id));
+        // $user->save();
+        // return response()->json(['liked_posts'=>auth()->user()->liked_posts]);
+    }
+    public function unlikePost(Request $request)
+    {
+        Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number-1'), ]);
+        return response()->json(['success'=>'post has been unliked'], 200);
+        // $user = User::find(auth()->user()->id);
+        // $user->liked_posts=\array_diff($user->liked_posts, [$request->id]);
+        // $user->save();
+        // return response()->json(['liked_posts'=>auth()->user()->liked_posts]);
     }
 }

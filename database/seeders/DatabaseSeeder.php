@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comment;
 use App\Models\Quote;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,7 +16,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Quote::factory(10)->create();
-        
+        Comment::factory(10)->create();
     }
 }

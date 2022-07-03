@@ -23,8 +23,7 @@ class QuoteFactory extends Factory
             'user_id' => User::factory(),
             'movie_id' => Movie::factory(),
             'body' => $this->faker->sentence(),
-            'comments_number'=> $this->faker->numberBetween(1,30),
-            'likes_number'=> $this->faker->numberBetween(1,30),
+            'likes_number'=> $this->faker->numberBetween(1, 30),
         ];
     }
 }
