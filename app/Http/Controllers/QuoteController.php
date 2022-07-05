@@ -23,18 +23,10 @@ class QuoteController extends Controller
     {
         Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number+1'), ]);
         return response()->json(['success'=>'post has been liked'], 200);
-        // $user = User::find(auth()->user()->id);
-        // $user->liked_posts=array_merge($user->liked_posts, array($request->id));
-        // $user->save();
-        // return response()->json(['liked_posts'=>auth()->user()->liked_posts]);
     }
     public function unlikePost(Request $request)
     {
         Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number-1'), ]);
         return response()->json(['success'=>'post has been unliked'], 200);
-        // $user = User::find(auth()->user()->id);
-        // $user->liked_posts=\array_diff($user->liked_posts, [$request->id]);
-        // $user->save();
-        // return response()->json(['liked_posts'=>auth()->user()->liked_posts]);
     }
 }

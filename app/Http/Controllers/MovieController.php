@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
-    public function show()
+    public function index()
     {
         return Movie::paginate(5);
     }

@@ -15,6 +15,6 @@ class CommentController extends Controller
     public function addComment(Request $request)
     {
         Comment::create(['user_id'=>auth()->user()->id,'quote_id'=>$request->quote_id,'body'=>$request->body]);
-        return response()->json(['message'=>'Comment added successfully','data'=>Quote::latest()->with('movie')->with('author')->with('comments.author')->paginate(5)]);
+        return response()->json(['message'=>'Comment added successfully'], 200);
     }
 }
