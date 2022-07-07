@@ -27,12 +27,15 @@ class OAuthController extends Controller
                 'email' => $googleUser->getEmail(),
                 'password'=>Hash::make($googleUser->name . '@' . $googleUser->id),
             ]);
+            $user->email_verified_at=now();
+            $user->save();
         }
         $token = auth('api')->login($user);
         $expires_in = auth('api')->factory()->getTTL() * 60;
         $username = auth('api')->user()->name;
         $user_email = auth('api')->user()->email;
         $user_pfp=auth('api')->user()->user_pfp;
-        return redirect()->away(env('FRONT_REDIRECT')."/redirecting?token={$token}&expires_in={$expires_in}&username={$username}&email={$user_email}&user_pfp={$user_pfp}");
+        return redirect()
+        ->away(env('FRONT_REDIRECT')."/redirecting?token={$token}&expires_in={$expires_in}&username={$username}&email={$user_email}&user_pfp={$user_pfp}");
     }
 }
