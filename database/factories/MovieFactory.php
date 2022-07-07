@@ -21,12 +21,12 @@ class MovieFactory extends Factory
             'user_id'=>User::factory(),
             'title'=>$this->faker->text(10),
             'slug'=>$this->faker->text(10),
-			'thumbnail'=>$this->faker->sentence(),
-            'release_date'=>$this->faker->date(),
+            'thumbnail'=>$this->faker->sentence(),
+            'release_date'=>$this->faker->numberBetween(1990, 2023),
             'genre'=>$this->faker->text(5),
             'description'=>$this->faker->sentence(),
             'director'=>$this->faker->text(10),
-            'income'=>$this->faker->numberBetween(1000,20000),
+            'income'=>$this->faker->numberBetween(1000, 20000),
         ];
     }
 }

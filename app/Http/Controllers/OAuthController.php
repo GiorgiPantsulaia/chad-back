@@ -30,6 +30,9 @@ class OAuthController extends Controller
         }
         $token = auth('api')->login($user);
         $expires_in = auth('api')->factory()->getTTL() * 60;
-        return redirect()->away("http://localhost:3000/redirecting?token={$token}&expires_in={$expires_in}");
+        $username = auth('api')->user()->name;
+        $user_email = auth('api')->user()->email;
+        $user_pfp=auth('api')->user()->user_pfp;
+        return redirect()->away(env('FRONT_REDIRECT')."/redirecting?token={$token}&expires_in={$expires_in}&username={$username}&email={$user_email}&user_pfp={$user_pfp}");
     }
 }

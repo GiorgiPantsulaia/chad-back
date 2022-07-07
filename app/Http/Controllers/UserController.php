@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Movie;
 use Illuminate\Http\Request;
 
-class MovieController extends Controller
+class UserController extends Controller
 {
     public function __construct()
     {
@@ -13,7 +12,6 @@ class MovieController extends Controller
     }
     public function index()
     {
-        $user = auth()->user();
-        return response()->json(['data'=>Movie::where('user_id', $user->id)->get()]);
+        return response()->json(['user'=>auth()->user()]);
     }
 }
