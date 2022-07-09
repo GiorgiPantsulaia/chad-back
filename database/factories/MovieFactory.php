@@ -18,12 +18,11 @@ class MovieFactory extends Factory
     public function definition()
     {
         return [
-            'user_id'=>User::factory(),
+            'user_id'=>21,
             'title'=>$this->faker->text(10),
             'slug'=>$this->faker->text(10),
-            'thumbnail'=>$this->faker->sentence(),
+            'thumbnail'=>'images/sparrow.jpg',
             'release_date'=>$this->faker->numberBetween(1990, 2023),
-            'genre'=>$this->faker->text(5),
             'description'=>$this->faker->sentence(),
             'director'=>$this->faker->text(10),
             'income'=>$this->faker->numberBetween(1000, 20000),

@@ -14,6 +14,6 @@ class MovieController extends Controller
     public function index()
     {
         $user = auth()->user();
-        return response()->json(['data'=>Movie::where('user_id', $user->id)->get()]);
+        return response()->json(['data'=>Movie::where('user_id', $user->id)->with('quotes')->get()]);
     }
 }

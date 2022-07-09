@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->string('slug')->unique();
             $table->string('thumbnail')->nullable();
             $table->integer('release_date');
-            $table->string('genre');
             $table->text('description');
             $table->string('director');
             $table->float('income');

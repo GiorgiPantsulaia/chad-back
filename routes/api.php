@@ -35,7 +35,7 @@ Route::controller(QuoteController::class)->group(function () {
     Route::post('/post-quote', 'create')->name('post.quote');
 });
 
-Route::get('/all-movies', [MovieController::class, 'index'])->name('all.movies');
+Route::get('/user-movies', [MovieController::class, 'index'])->name('user.movies');
 
 Route::post('/add-comment', [CommentController::class,'addComment'])->name('add.comment');
 

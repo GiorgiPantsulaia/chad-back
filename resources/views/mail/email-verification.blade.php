@@ -7,7 +7,8 @@
             #0d0b14 98.75%
         );
         width: 100%;
-        height: 100%;
+        height:auto 100%;
+        padding-bottom: 15px;
     "
 >
     <div
@@ -29,7 +30,7 @@
             MOVIE QUOTES
         </h2>
     </div>
-    <div style="margin-left: 15%; margin-top: 5%; color: #fff">
+    <div style="margin-left: 10%; margin-top: 5%; color: #fff; ">
         Hola, <b>{{ $email_data['name'] }}</b> <br /><br />
 
         <br /><br />
@@ -67,6 +68,7 @@
                 color: #ddccaa;
                 font-family: Arial, Helvetica, sans-serif;
                 font-weight: 200;
+                word-wrap: break-word;
             "
         >
             http://localhost:3000/verify?token={{
@@ -77,5 +79,6 @@
             If you have any problems, please contact us: support@moviequotes.ge
         </h4>
         MovieQuotes Crew
+        <br>
     </div>
 </div>
