@@ -57,7 +57,7 @@ class AuthController extends Controller
             'expires_in' => auth('api')->factory()->getTTL() * 60,
             'username'=>auth()->user()->name,
             'user_email'=>auth()->user()->email,
-            'user_pfp'=>auth()->user()->profile_picture
+            'user_pfp'=>auth()->user()->profile_pic
         ]);
     }
     public function logout() : JsonResponse

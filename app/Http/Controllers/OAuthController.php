@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -10,13 +12,13 @@ use Laravel\Socialite\Facades\Socialite;
 
 class OAuthController extends Controller
 {
-    public function redirect()
+    public function redirect(): JsonResponse
     {
         $url = Socialite::driver('google')->stateless()->redirect()->getTargetUrl();
 
         return response()->json(['url'=>$url]);
     }
-    public function callback()
+    public function callback() : RedirectResponse
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
         $user = User::where('email', $googleUser->getEmail())->first();

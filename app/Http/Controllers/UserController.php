@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -10,7 +11,7 @@ class UserController extends Controller
     {
         $this->middleware('auth:api');
     }
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json(['user'=>auth()->user()]);
     }

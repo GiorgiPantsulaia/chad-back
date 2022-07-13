@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\QuoteController;
@@ -43,4 +44,13 @@ Route::post('/logged-user', [UserController::class,'index'])->name('logged.user'
 
 Route::post('/auth-redirect', [OAuthController::class,'redirect'])->name('redirect');
 Route::get('/auth-callback', [OAuthController::class,'callback'])->name('callback');
+
 Route::post('/verify-email', [AuthController::class,'verifyEmail'])->name('email.verification');
+Route::get('genres', [GenreController::class,'index'])->name('all.genres');
+
+
+Route::post('/post-movie', [MovieController::class,'create'])->name('post.movie');
+Route::post('movie-description', [MovieController::class,'show'])->name('movie.description');
+
+Route::delete('delete-quote', [QuoteController::class,'destroy'])->name('delete.quote');
+Route::delete('delete-movie', [MovieController::class,'destroy'])->name('delete.movie');

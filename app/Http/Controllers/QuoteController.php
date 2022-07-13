@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Quote;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,27 +15,27 @@ class QuoteController extends Controller
     {
         $this->middleware('auth:api');
     }
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json(['data'=>Quote::latest()->with('movie')->with('author')->with('comments.author')->paginate(5)]) ;
     }
 
-    public function likePost(Request $request)
+    public function likePost(Request $request): JsonResponse
     {
         Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number+1'), ]);
         return response()->json(['success'=>'post has been liked'], 200);
     }
-    public function unlikePost(Request $request)
+    public function unlikePost(Request $request): JsonResponse
     {
         Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number-1'), ]);
         return response()->json(['success'=>'post has been unliked'], 200);
     }
 
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $file = $request->file('img');
         $file_name=time(). '.' . $file->getClientOriginalName();
-        $file->move(public_path('images'), $file_name);
+        $file->move(public_path('quote-thumbnails'), $file_name);
         
         
         Quote::create([
@@ -45,8 +46,14 @@ class QuoteController extends Controller
             'user_id'=>auth()->user()->id,
             'movie_id'=>$request->movie_id,
             'likes_number'=>0,
-            'thumbnail'=>'/images/'.$file_name
+            'thumbnail'=>'quote-thumbnails/'.$file_name
             ]);
         return response()->json(['message'=>'Quote added successfully.']);
+    }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        Quote::where('id', $request->id)->delete();
+        return response()->json(['message'=>'Quote deleted successfully.']);
     }
 }
