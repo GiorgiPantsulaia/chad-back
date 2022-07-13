@@ -30,13 +30,11 @@ class QuoteController extends Controller
         Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number-1'), ]);
         return response()->json(['success'=>'post has been unliked'], 200);
     }
-
     public function create(Request $request): JsonResponse
     {
         $file = $request->file('img');
         $file_name=time(). '.' . $file->getClientOriginalName();
         $file->move(public_path('quote-thumbnails'), $file_name);
-        
         
         Quote::create([
             'body'=>[
@@ -55,5 +53,30 @@ class QuoteController extends Controller
     {
         Quote::where('id', $request->id)->delete();
         return response()->json(['message'=>'Quote deleted successfully.']);
+    }
+
+    public function update(Request $request)
+    {
+        if ($request->file('img')) {
+            $file = $request->file('img');
+            $file_name=time(). '.' . $file->getClientOriginalName();
+            $file->move(public_path('quote-thumbnails'), $file_name);
+            Quote::where('id', $request->id)->update([
+                'body'=>[
+                    'en'=>$request->english_quote,
+                    'ka'=>$request->georgian_quote
+                ],
+                'thumbnail'=>'quote-thumbnails/' . $file_name,
+            ]);
+            return response()->json(['message'=>'Quote updated successfully.']);
+        } else {
+            Quote::where('id', $request->id)->update([
+                'body'=>[
+                    'en'=>$request->english_quote,
+                    'ka'=>$request->georgian_quote
+                ],
+            ]);
+            return response()->json(['message'=>'Quote updated successfully.']);
+        }
     }
 }

@@ -19,7 +19,7 @@ class MovieController extends Controller
         return response()->json(['data'=>Movie::latest()->where('user_id', $user->id)->with('quotes')->get()]);
     }
 
-    private function slugify($string)
+    private function slugify(string $string)
     {
         return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string), '-'));
     }
@@ -62,8 +62,9 @@ class MovieController extends Controller
         return response()->json(['data'=>Movie::where('slug', $request->slug)->with('genres')->with('quotes.comments')->first()]);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request) : JsonResponse
     {
-        # code...
+        Movie::destroy($request->id);
+        return response()->json(['message'=>'Movie deleted successfully.']);
     }
 }

@@ -34,6 +34,8 @@ Route::controller(QuoteController::class)->group(function () {
     Route::post('/like-post', 'likePost')->name('addLike');
     Route::post('/unlike-post', 'unlikePost')->name('removeLike');
     Route::post('/post-quote', 'create')->name('post.quote');
+    Route::delete('delete-quote', 'destroy')->name('delete.quote');
+    Route::patch('update-quote', 'update')->name('update.quote');
 });
 
 Route::get('/user-movies', [MovieController::class, 'index'])->name('user.movies');
@@ -52,5 +54,5 @@ Route::get('genres', [GenreController::class,'index'])->name('all.genres');
 Route::post('/post-movie', [MovieController::class,'create'])->name('post.movie');
 Route::post('movie-description', [MovieController::class,'show'])->name('movie.description');
 
-Route::delete('delete-quote', [QuoteController::class,'destroy'])->name('delete.quote');
+
 Route::delete('delete-movie', [MovieController::class,'destroy'])->name('delete.movie');
