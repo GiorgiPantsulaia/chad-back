@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->integer('release_date');
             $table->json('description');
             $table->json('director');
-            $table->float('income');
+            $table->bigInteger('income');
             $table->timestamps();
         });
     }

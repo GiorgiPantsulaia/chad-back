@@ -6,6 +6,7 @@ use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use App\Models\Quote;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 Route::controller(QuoteController::class)->group(function () {
-    Route::get('/all-quotes', 'index')->name('all.quotes');
+    Route::post('/all-quotes', 'index')->name('all.quotes');
     Route::post('/like-post', 'likePost')->name('addLike');
     Route::post('/unlike-post', 'unlikePost')->name('removeLike');
     Route::post('/post-quote', 'create')->name('post.quote');
@@ -56,3 +57,4 @@ Route::post('movie-description', [MovieController::class,'show'])->name('movie.d
 
 
 Route::delete('delete-movie', [MovieController::class,'destroy'])->name('delete.movie');
+Route::post('search', [SearchController::class,'index'])->name('search');

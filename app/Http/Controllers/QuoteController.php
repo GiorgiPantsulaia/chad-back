@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostLiked;
 use App\Models\Comment;
 use App\Models\Quote;
 use App\Models\User;
@@ -22,7 +23,9 @@ class QuoteController extends Controller
 
     public function likePost(Request $request): JsonResponse
     {
-        Quote::where('id', $request->id)->update(['likes_number'=> DB::raw('likes_number+1'), ]);
+        $quote = Quote::where('id', $request->id)->with('movie')->first();
+        event(new PostLiked($quote, auth()->user()));
+        $quote->update(['likes_number'=> DB::raw('likes_number+1'), ]);
         return response()->json(['success'=>'post has been liked'], 200);
     }
     public function unlikePost(Request $request): JsonResponse
