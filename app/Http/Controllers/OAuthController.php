@@ -27,10 +27,13 @@ class OAuthController extends Controller
             $user = User::Create([
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
-                'password'=>Hash::make($googleUser->name . '@' . $googleUser->id),
+                'password'=>Hash::make($googleUser->getName() . '@' . $googleUser->getId()),
             ]);
             $user->email_verified_at=now();
             $user->save();
+        } else {
+            return redirect()
+        ->away(env('FRONT_REDIRECT')."/register?code=409");
         }
         $token = auth('api')->login($user);
         $expires_in = auth('api')->factory()->getTTL() * 60;

@@ -60,4 +60,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Movie::class);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function liked_posts()
+    {
+        return $this->belongsToMany(Quote::class);
+    }
 }

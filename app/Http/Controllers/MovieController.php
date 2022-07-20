@@ -48,7 +48,7 @@ class MovieController extends Controller
             'income'=>$request->income,
             'thumbnail'=>'movie-thumbnails/'.$file_name
         ]);
-        $genres = Genre::where('title', $request->chosen_genres)->get();
+        $genres = Genre::whereIn('title->'.$request->lang, explode(",", $request->chosen_genres))->get();
         $movie->genres()->attach($genres);
 
         return response()->json(['message'=>'Movie added successfully.']);

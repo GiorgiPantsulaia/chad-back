@@ -15,16 +15,14 @@ class PostLiked implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $quote;
-    public $user;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($quote, $user)
+    public function __construct($quote)
     {
         $this->quote=$quote;
-        $this->user=$user;
     }
 
     /**

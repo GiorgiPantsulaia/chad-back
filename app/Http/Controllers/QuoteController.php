@@ -23,9 +23,10 @@ class QuoteController extends Controller
 
     public function likePost(Request $request): JsonResponse
     {
-        $quote = Quote::where('id', $request->id)->with('movie')->first();
-        event(new PostLiked($quote, auth()->user()));
+        $quote = Quote::where('id', $request->id)->with('movie')->with('author')->with('comments.author')->first();
         $quote->update(['likes_number'=> DB::raw('likes_number+1'), ]);
+        event(new PostLiked($quote));
+        $quote->likes()->attach(auth()->user());
         return response()->json(['success'=>'post has been liked'], 200);
     }
     public function unlikePost(Request $request): JsonResponse

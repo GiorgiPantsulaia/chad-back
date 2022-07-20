@@ -12,9 +12,10 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('genres', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->json('title');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->bigInteger('recipient_id')->constrained();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('genres');
+        Schema::dropIfExists('notifications');
     }
 };
