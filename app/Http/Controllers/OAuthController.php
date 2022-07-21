@@ -31,10 +31,7 @@ class OAuthController extends Controller
             ]);
             $user->email_verified_at=now();
             $user->save();
-        } else {
-            return redirect()
-        ->away(env('FRONT_REDIRECT')."/register?code=409");
-        }
+        };
         $token = auth('api')->login($user);
         $expires_in = auth('api')->factory()->getTTL() * 60;
         $username = auth('api')->user()->name;

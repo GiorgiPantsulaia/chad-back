@@ -15,8 +15,4 @@ class UserController extends Controller
     {
         return response()->json(['user'=>auth()->user()]);
     }
-    public function likedPosts()
-    {
-        return response()->json(['data'=>auth()->user()->liked_posts]);
-    }
 }

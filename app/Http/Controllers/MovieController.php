@@ -26,7 +26,7 @@ class MovieController extends Controller
     {
         $file = $request->file('img');
         $file_name=time(). '.' . $file->getClientOriginalName();
-        $file->move(public_path('movie-thumbnails'), $file_name);
+        $file->store(public_path('storage/movie-thumbnails'), $file_name);
         $slug = $this->slugify($request->english_title);
         
         $movie=Movie::create([
@@ -46,7 +46,7 @@ class MovieController extends Controller
                 'ka'=> $request->director_geo
             ],
             'income'=>$request->income,
-            'thumbnail'=>'movie-thumbnails/'.$file_name
+            'thumbnail'=>'storage/movie-thumbnails/'.$file_name
         ]);
         $genres = Genre::whereIn('title->'.$request->lang, explode(",", $request->chosen_genres))->get();
         $movie->genres()->attach($genres);

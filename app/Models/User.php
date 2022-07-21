@@ -41,7 +41,6 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'liked_posts'=>'array'
     ];
     public function setPasswordAttribute($password)
     {

@@ -58,5 +58,3 @@ Route::post('movie-description', [MovieController::class,'show'])->name('movie.d
 
 Route::delete('delete-movie', [MovieController::class,'destroy'])->name('delete.movie');
 Route::post('search', [SearchController::class,'index'])->name('search');
-
-Route::get('liked_posts', [UserController::class,'likedPosts'])->name('liked.posts');
