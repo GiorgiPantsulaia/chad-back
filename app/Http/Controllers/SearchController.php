@@ -18,7 +18,7 @@ class SearchController extends Controller
             ->with('author')->with('genres')->with(['quotes'=>['comments.author','author','movie']])->get()]);
         } elseif ($request->search[0]==='#') {
             return response()->json(['quotes'=>Quote::where('body->'.$request->lang, 'like', '%' . $search . '%')
-            ->with('movie')->with('author')->with('comments.author')->get()]);
+            ->with('movie')->with('author')->with('comments.author')->with('likes')->get()]);
         }
     }
 }

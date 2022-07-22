@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('movie_id')->constrained()->cascadeOnDelete();
             $table->json('body');
-            $table->integer('likes_number')->nullable();
             $table->string('thumbnail')->nullable();
             $table->timestamps();
         });

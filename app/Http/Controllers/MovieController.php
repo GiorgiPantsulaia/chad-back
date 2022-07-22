@@ -26,7 +26,7 @@ class MovieController extends Controller
     {
         $file = $request->file('img');
         $file_name=time(). '.' . $file->getClientOriginalName();
-        $file->store(public_path('storage/movie-thumbnails'), $file_name);
+        $file->move(public_path('storage/movie-thumbnails'), $file_name);
         $slug = $this->slugify($request->english_title);
         
         $movie=Movie::create([
@@ -57,7 +57,7 @@ class MovieController extends Controller
     public function show(Request $request) : JsonResponse
     {
         return response()->json(['data'=>Movie::where('slug', $request->slug)
-        ->with('author')->with('genres')->with(['quotes'=>['comments.author','author','movie']])->first()]);
+        ->with('author')->with('genres')->with(['quotes'=>['comments.author','author','movie','likes']])->first()]);
     }
 
     public function destroy(Request $request) : JsonResponse

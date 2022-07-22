@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
+use App\Mail\EmailConfirmation;
 use App\Mail\EmailVerification;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -18,6 +19,14 @@ class AuthController extends Controller
             'name'              => $name,
             'verification_code' => $verification_code,
         ]));
+    }
+    private static function sendConfirmation(string $name, mixed $email, mixed $verification_code)
+    {
+        $data = [
+            'name'              => $name,
+            'verification_code' => $verification_code,
+        ];
+        Mail::to($email)->send(new EmailConfirmation($data));
     }
     public function create(RegisterRequest $request) : JsonResponse
     {
@@ -44,7 +53,7 @@ class AuthController extends Controller
         if ($user && $user->email_verified_at===null) {
             return response()->json(['error'=>'Check your email to activate account.']);
         } elseif (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Email or password is incorrect,check your credentials.'], 401);
+            return response()->json(['error' => 'incorrect credentials'], 401);
         } elseif (Auth::attempt($credentials)) {
             return $this->respondWithToken($token, $request);
         }
@@ -57,6 +66,7 @@ class AuthController extends Controller
             'expires_in' => auth('api')->factory()->getTTL() * 60,
             'username'=>auth()->user()->name,
             'user_email'=>auth()->user()->email,
+            'user_id'=>auth()->user()->id,
             'user_pfp'=>auth()->user()->profile_pic
         ]);
     }
@@ -74,5 +84,25 @@ class AuthController extends Controller
             $user->markEmailAsVerified();
             return response()->json(['message'=>'Email Activated Successfully'], 200);
         }
+    }
+    public function confirmEmail(Request $request)
+    {
+        $user = User::where('email', '=', $request->email)->first();
+
+        if ($user) {
+            $this->sendConfirmation($user->name, $user->email, $user->verification_code);
+            return response()->json(['message'=>'Email confirmation sent.'], 200);
+        } else {
+            return response()->json(['error'=>'User does not exist'], 422);
+        }
+    }
+    public function resetPassword(Request $request)
+    {
+        $verification_code=$request->code;
+        $user=User::where('verification_code', $verification_code)->first();
+        $user->password=$request->password;
+        $user->save();
+
+        return response()->json(['message'=>'Password updated successfully.'], 200);
     }
 }

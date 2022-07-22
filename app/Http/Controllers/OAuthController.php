@@ -37,7 +37,8 @@ class OAuthController extends Controller
         $username = auth('api')->user()->name;
         $user_email = auth('api')->user()->email;
         $user_pfp=auth('api')->user()->profile_pic;
+        $user_id=auth('api')->user()->id;
         return redirect()
-        ->away(env('FRONT_REDIRECT')."/redirecting?token={$token}&expires_in={$expires_in}&username={$username}&email={$user_email}&user_pfp={$user_pfp}");
+        ->away(env('FRONT_REDIRECT')."/redirecting?token={$token}&expires_in={$expires_in}&username={$username}&email={$user_email}&user_pfp={$user_pfp}&user_id={$user_id}");
     }
 }

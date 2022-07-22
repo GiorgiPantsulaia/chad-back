@@ -58,3 +58,5 @@ Route::post('movie-description', [MovieController::class,'show'])->name('movie.d
 
 Route::delete('delete-movie', [MovieController::class,'destroy'])->name('delete.movie');
 Route::post('search', [SearchController::class,'index'])->name('search');
+Route::post('confirm-email', [AuthController::class,'confirmEmail'])->name('confirm.email');
+Route::patch('reset-password', [AuthController::class,'resetPassword'])->name('reset.password');

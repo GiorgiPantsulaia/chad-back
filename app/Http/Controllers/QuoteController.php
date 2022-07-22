@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewNotification;
 use App\Events\PostLiked;
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -24,16 +26,27 @@ class QuoteController extends Controller
 
     public function likePost(Request $request): JsonResponse
     {
-        $quote = Quote::where('id', $request->id)->with('movie')->with('author')->with('comments.author')->with('likes')->first();
-        $quote->update(['likes_number'=> DB::raw('likes_number+1'), ]);
+        $quote = Quote::where('id', $request->id)->with('likes')->first();
         $quote->likes()->attach(auth()->user());
         event(new PostLiked($quote));
+        Notification::create(['user_id'=>auth()->user()->id,
+            'type'=>'like',
+            'state'=>'unread',
+            'recipient_id'=>$quote->author->id,
+            'quote_id'=>$quote->id
+        ]);
+        $notification=Notification::where(['user_id'=>auth()->user()->id,
+        'type'=>'like',
+        'state'=>'unread',
+        'recipient_id'=>$quote->author->id,
+        'quote_id'=>$quote->id
+    ])->with('sender')->first();
+        event(new NewNotification($notification));
         return response()->json(['success'=>'post has been liked'], 200);
     }
     public function unlikePost(Request $request): JsonResponse
     {
-        $quote=Quote::where('id', $request->id)->with('movie')->with('author')->with('comments.author')->with('likes')->first();
-        $quote->update(['likes_number'=> DB::raw('likes_number-1'), ]);
+        $quote=Quote::where('id', $request->id)->with('likes')->first();
         $quote->likes()->detach(auth()->user());
         event(new PostLiked($quote));
         return response()->json(['success'=>'post has been unliked'], 200);
@@ -51,7 +64,6 @@ class QuoteController extends Controller
             ],
             'user_id'=>auth()->user()->id,
             'movie_id'=>$request->movie_id,
-            'likes_number'=>0,
             'thumbnail'=>'storage/quote-thumbnails/'.$file_name
             ]);
         return response()->json(['message'=>'Quote added successfully.']);
