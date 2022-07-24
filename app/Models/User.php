@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -55,17 +57,17 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function movies()
+    public function movies() :HasMany
     {
         return $this->hasMany(Movie::class);
     }
 
-    public function notifications()
+    public function notifications() :HasMany
     {
         return $this->hasMany(Notification::class);
     }
 
-    public function liked_posts()
+    public function liked_posts() :BelongsToMany
     {
         return $this->belongsToMany(Quote::class);
     }

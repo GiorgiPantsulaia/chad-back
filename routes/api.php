@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SearchController;
@@ -31,6 +32,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 Route::controller(QuoteController::class)->group(function () {
+    Route::post('get-quote', 'show')->name('get.quote');
     Route::post('/all-quotes', 'index')->name('all.quotes');
     Route::post('/like-post', 'likePost')->name('addLike');
     Route::post('/unlike-post', 'unlikePost')->name('removeLike');
@@ -60,3 +62,4 @@ Route::delete('delete-movie', [MovieController::class,'destroy'])->name('delete.
 Route::post('search', [SearchController::class,'index'])->name('search');
 Route::post('confirm-email', [AuthController::class,'confirmEmail'])->name('confirm.email');
 Route::patch('reset-password', [AuthController::class,'resetPassword'])->name('reset.password');
+Route::get('notifications', [NotificationController::class,'index'])->name('notifications');

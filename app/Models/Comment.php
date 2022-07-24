@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
 {
@@ -11,11 +12,11 @@ class Comment extends Model
     
     use HasFactory;
 
-    public function quote()
+    public function quote() :BelongsTo
     {
         return $this->belongsTo(Quote::class, 'quote_id');
     }
-    public function author()
+    public function author() :BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

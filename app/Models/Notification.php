@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Notification extends Model
 {
@@ -12,15 +12,15 @@ class Notification extends Model
 
     protected $guarded=['id'];
 
-    public function sender()
+    public function sender() : BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function recipient()
+    public function recipient() : BelongsTo
     {
         return $this->belongsTo(User::class, 'recipient_id');
     }
-    public function post()
+    public function post() : BelongsTo
     {
         return $this->belongsTo(Quote::class, 'quote_id');
     }
