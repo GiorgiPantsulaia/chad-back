@@ -32,34 +32,36 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 Route::controller(QuoteController::class)->group(function () {
-    Route::post('get-quote', 'show')->name('get.quote');
-    Route::post('/all-quotes', 'index')->name('all.quotes');
+    Route::post('/get-quote', 'show')->name('get-quote');
+    Route::post('/all-quotes', 'index')->name('all-quotes');
     Route::post('/like-post', 'likePost')->name('addLike');
     Route::post('/unlike-post', 'unlikePost')->name('removeLike');
-    Route::post('/post-quote', 'create')->name('post.quote');
-    Route::delete('delete-quote', 'destroy')->name('delete.quote');
-    Route::patch('update-quote', 'update')->name('update.quote');
+    Route::post('/post-quote', 'create')->name('post-quote');
+    Route::delete('/delete-quote', 'destroy')->name('delete-quote');
+    Route::patch('/update-quote', 'update')->name('update-quote');
 });
 
-Route::get('/user-movies', [MovieController::class, 'index'])->name('user.movies');
+Route::get('/user-movies', [MovieController::class, 'index'])->name('user-movies');
 
-Route::post('/add-comment', [CommentController::class,'addComment'])->name('add.comment');
+Route::post('/add-comment', [CommentController::class,'addComment'])->name('add-comment');
 
-Route::post('/logged-user', [UserController::class,'index'])->name('logged.user');
+Route::post('/logged-user', [UserController::class,'index'])->name('logged-user');
 
 Route::post('/auth-redirect', [OAuthController::class,'redirect'])->name('redirect');
 Route::get('/auth-callback', [OAuthController::class,'callback'])->name('callback');
 
-Route::post('/verify-email', [AuthController::class,'verifyEmail'])->name('email.verification');
-Route::get('genres', [GenreController::class,'index'])->name('all.genres');
+Route::post('/verify-email', [AuthController::class,'verifyEmail'])->name('email-verification');
+Route::get('/genres', [GenreController::class,'index'])->name('all-genres');
 
 
-Route::post('/post-movie', [MovieController::class,'create'])->name('post.movie');
-Route::post('movie-description', [MovieController::class,'show'])->name('movie.description');
+Route::post('/post-movie', [MovieController::class,'create'])->name('post-movie');
+Route::post('/movie-description', [MovieController::class,'show'])->name('movie-description');
 
 
-Route::delete('delete-movie', [MovieController::class,'destroy'])->name('delete.movie');
-Route::post('search', [SearchController::class,'index'])->name('search');
-Route::post('confirm-email', [AuthController::class,'confirmEmail'])->name('confirm.email');
-Route::patch('reset-password', [AuthController::class,'resetPassword'])->name('reset.password');
-Route::get('notifications', [NotificationController::class,'index'])->name('notifications');
+Route::delete('/delete-movie', [MovieController::class,'destroy'])->name('delete-movie');
+Route::post('/search', [SearchController::class,'index'])->name('search');
+Route::post('/confirm-email', [AuthController::class,'confirmEmail'])->name('confirm-email');
+Route::patch('/reset-password', [AuthController::class,'resetPassword'])->name('reset-password');
+Route::get('/notifications', [NotificationController::class,'index'])->name('notifications');
+Route::post('/notification-read', [NotificationController::class,'markAsRead'])->name('mark-as-read');
+Route::get('/notifications-read', [NotificationController::class,'markAllRead'])->name('mark-all-read');

@@ -48,7 +48,7 @@ class QuoteController extends Controller
             'state'=>'unread',
             'recipient_id'=>$quote->author->id,
             'quote_id'=>$quote->id
-        ])->with('sender')->with('post.movie')->first();
+        ])->with('sender')->with('post.movie')->latest()->first();
           
             event(new NewNotification($notification));
         }
@@ -59,6 +59,7 @@ class QuoteController extends Controller
     {
         $quote=Quote::where('id', $request->id)->with('likes')->first();
         $quote->likes()->detach(auth()->user());
+        event(new PostLiked($quote));
 
         $notification=Notification::where(['user_id'=>auth()->user()->id,
         'type'=>'like',
@@ -71,7 +72,6 @@ class QuoteController extends Controller
             $notification->delete();
         }
 
-        event(new PostLiked($quote));
         return response()->json(['success'=>'post has been unliked'], 200);
     }
     public function create(Request $request): JsonResponse

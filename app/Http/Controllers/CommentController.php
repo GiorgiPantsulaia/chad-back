@@ -24,6 +24,7 @@ class CommentController extends Controller
         $comment = Comment::where(['user_id'=>auth()->user()->id,'body'=>$request->body,'quote_id'=>$request->quote_id])->with('author')->first();
         
         event(new PostCommented($comment));
+        
         if ($request->author_id!==auth()->user()->id) {
             Notification::create([
             'created_at'=>Carbon::now(),
