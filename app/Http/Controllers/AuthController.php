@@ -55,15 +55,18 @@ class AuthController extends Controller
         } elseif (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'incorrect credentials'], 401);
         } elseif (Auth::attempt($credentials)) {
-            return $this->respondWithToken($token, $request->remember_me, $request);
+            if ($request->remember_me) {
+                $token=auth('api')->setTTL(7200)->attempt($credentials);
+            }
+            return $this->respondWithToken($token, $request);
         }
     }
-    protected function respondWithToken(string $token, bool $remember_me) :JsonResponse
+    protected function respondWithToken(string $token) :JsonResponse
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $remember_me ? 86400 : auth('api')->factory()->getTTL() * 60,
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
             'username'=>auth()->user()->name,
             'user_email'=>auth()->user()->email,
             'user_id'=>auth()->user()->id,
