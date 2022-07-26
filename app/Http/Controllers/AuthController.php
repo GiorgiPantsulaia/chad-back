@@ -49,22 +49,21 @@ class AuthController extends Controller
         $request->merge([$nameOrEmail => $login]);
 
         $credentials = $request->only([$nameOrEmail, 'password']);
-
         $user = User::where('email', $request->name)->orWhere('name', $request->name)->first();
         if ($user && $user->email_verified_at===null) {
             return response()->json(['error'=>'Check your email to activate account.']);
         } elseif (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'incorrect credentials'], 401);
         } elseif (Auth::attempt($credentials)) {
-            return $this->respondWithToken($token, $request);
+            return $this->respondWithToken($token, $request->remember_me, $request);
         }
     }
-    protected function respondWithToken(string $token) :JsonResponse
+    protected function respondWithToken(string $token, bool $remember_me) :JsonResponse
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'expires_in' => $remember_me ? 86400 : auth('api')->factory()->getTTL() * 60,
             'username'=>auth()->user()->name,
             'user_email'=>auth()->user()->email,
             'user_id'=>auth()->user()->id,
