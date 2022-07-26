@@ -125,6 +125,11 @@ class QuoteController extends Controller
     }
     public function show(Request $request)
     {
-        return response()->json(Quote::where('id', $request->id)->with('author')->with('movie')->with('comments.author')->with('likes')->first());
+        $quote=Quote::where('id', $request->id)->with('author')->with('movie')->with('comments.author')->with('likes')->first();
+        if ($quote) {
+            return response()->json($quote);
+        } else {
+            return response()->json('error', 404);
+        }
     }
 }

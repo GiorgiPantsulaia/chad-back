@@ -31,6 +31,7 @@ class AuthController extends Controller
     public function create(RegisterRequest $request) : JsonResponse
     {
         $attributes = $request->validated();
+        $attributes['google_user']=false;
         $user = User::create($attributes);
         $user->verification_code = sha1(time());
         $user->save();
@@ -87,7 +88,7 @@ class AuthController extends Controller
     }
     public function confirmEmail(Request $request)
     {
-        $user = User::where('email', '=', $request->email)->first();
+        $user = User::where(['email'=>$request->email,'google_user'=>false])->first();
 
         if ($user) {
             $this->sendConfirmation($user->name, $user->email, $user->verification_code);

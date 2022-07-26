@@ -25,6 +25,7 @@ class OAuthController extends Controller
 
         if (!$user) {
             $user = User::Create([
+                'google_user'=>true,
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
                 'password'=>Hash::make($googleUser->getName() . '@' . $googleUser->getId()),

@@ -65,3 +65,5 @@ Route::patch('/reset-password', [AuthController::class,'resetPassword'])->name('
 Route::get('/notifications', [NotificationController::class,'index'])->name('notifications');
 Route::post('/notification-read', [NotificationController::class,'markAsRead'])->name('mark-as-read');
 Route::get('/notifications-read', [NotificationController::class,'markAllRead'])->name('mark-all-read');
+Route::post('/update-user', [UserController::class,'update'])->name('update-user');
+Route::post('/update-email', [UserController::class,'updateEmail'])->name('update-email');

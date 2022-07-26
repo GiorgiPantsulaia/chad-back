@@ -56,10 +56,13 @@ class MovieController extends Controller
 
     public function show(Request $request) : JsonResponse
     {
-        return response()->json(['data'=>Movie::where('slug', $request->slug)
-        ->with('author')->with('genres')->with(['quotes'=>['comments.author','author','movie','likes']])->first()]);
+        $movie=Movie::where('slug', $request->slug)->with('author')->with('genres')->with(['quotes'=>['comments.author','author','movie','likes']])->first();
+        if ($movie) {
+            return response()->json(['data'=>$movie]);
+        } else {
+            return response()->json('error', 404);
+        }
     }
-
     public function destroy(Request $request) : JsonResponse
     {
         Movie::destroy($request->id);

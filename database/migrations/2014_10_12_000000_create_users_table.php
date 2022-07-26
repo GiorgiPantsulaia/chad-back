@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string('verification_code')->nullable();
             $table->string('profile_pic')->nullable();
+            $table->boolean('google_user');
             $table->rememberToken();
             $table->timestamps();
         });
