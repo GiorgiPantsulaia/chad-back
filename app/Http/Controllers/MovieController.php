@@ -68,4 +68,38 @@ class MovieController extends Controller
         Movie::destroy($request->id);
         return response()->json(['message'=>'Movie deleted successfully.']);
     }
+    public function update(Request $request)
+    {
+        if ($request->img) {
+            $file = $request->file('img');
+            $file_name=time(). '.' . $file->getClientOriginalName();
+            $file->move(public_path('storage/movie-thumbnails'), $file_name);
+            Movie::where('id', $request->id)->update(['thumbnail'=>'storage/movie-thumbnails/'.$file_name]);
+        }
+        if ($request->chosen_genres) {
+            $genres=Genre::whereIn('title->'.$request->lang, explode(",", $request->chosen_genres))->get();
+            $movie=Movie::where('id', $request->id)->first();
+            $movie->genres()->detach();
+            $movie->genres()->attach($genres);
+        }
+        $slug = $this->slugify($request->english_title);
+        Movie::where('id', $request->id)->update([
+            'title'=>[
+                'en'=> $request->english_title,
+                'ka'=> $request->georgian_title
+            ],
+            'slug'=>$slug,
+            'release_date'=>$request->release_date,
+            'description'=>[
+                'en'=> $request->english_description,
+                'ka'=> $request->georgian_description
+            ],
+            'director'=>[
+                'en'=> $request->director_eng,
+                'ka'=> $request->director_geo
+            ],
+            'income'=>$request->income,
+        ]);
+        return response()->json('Movie updated successfully', 200);
+    }
 }

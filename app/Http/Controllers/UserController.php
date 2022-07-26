@@ -8,6 +8,7 @@ use App\Mail\NewEmailConfirmation;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -51,6 +52,9 @@ class UserController extends Controller
                 $this->sendConfirmation($user->name, $request->email, $user->verification_code);
                 $confirmation_sent=true;
             }
+        }
+        if ($request->password) {
+            User::where('email', $request->user_email)->update(['password'=>Hash::make($request->password) ]);
         }
         return response()->json(['message'=>'Profile updated successfully',
         'user'=> User::where('email', $request->user_email)->first(),'confirmation_sent'=>$confirmation_sent], 200);

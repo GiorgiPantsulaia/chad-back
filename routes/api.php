@@ -23,47 +23,49 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
-
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register-user', 'create')->name('signup');
     Route::post('/login', 'login')->name('signin');
     Route::post('/logout', 'logout')->name('logout');
+    Route::post('/confirm-email', 'confirmEmail')->name('confirm-email');
+    Route::post('/verify-email', 'verifyEmail')->name('email-verification');
+    Route::patch('/reset-password', 'resetPassword')->name('reset-password');
 });
+
 Route::controller(QuoteController::class)->group(function () {
     Route::post('/get-quote', 'show')->name('get-quote');
     Route::post('/all-quotes', 'index')->name('all-quotes');
     Route::post('/like-post', 'likePost')->name('addLike');
     Route::post('/unlike-post', 'unlikePost')->name('removeLike');
     Route::post('/post-quote', 'create')->name('post-quote');
-    Route::delete('/delete-quote', 'destroy')->name('delete-quote');
     Route::patch('/update-quote', 'update')->name('update-quote');
+    Route::delete('/delete-quote', 'destroy')->name('delete-quote');
 });
 
-Route::get('/user-movies', [MovieController::class, 'index'])->name('user-movies');
+Route::controller(MovieController::class)->group(function () {
+    Route::get('/user-movies', 'index')->name('user-movies');
+    Route::post('/post-movie', 'create')->name('post-movie');
+    Route::post('/movie-description', 'show')->name('movie-description');
+    Route::patch('/update-movie', 'update')->name('update-movie');
+    Route::delete('/delete-movie', 'destroy')->name('delete-movie');
+});
 
+Route::controller(NotificationController::class)->group(function () {
+    Route::get('/notifications', 'index')->name('notifications');
+    Route::get('/notifications-read', 'markAllRead')->name('mark-all-read');
+    Route::post('/notification-read', 'markAsRead')->name('mark-as-read');
+});
+
+Route::controller(UserController::class)->group(function () {
+    Route::post('/update-user', 'update')->name('update-user');
+    Route::post('/update-email', 'updateEmail')->name('update-email');
+    Route::post('/logged-user', 'index')->name('logged-user');
+});
+
+Route::controller(OAuthController::class)->group(function () {
+    Route::get('/auth-callback', 'callback')->name('callback');
+    Route::post('/auth-redirect', 'redirect')->name('redirect');
+});
 Route::post('/add-comment', [CommentController::class,'addComment'])->name('add-comment');
-
-Route::post('/logged-user', [UserController::class,'index'])->name('logged-user');
-
-Route::post('/auth-redirect', [OAuthController::class,'redirect'])->name('redirect');
-Route::get('/auth-callback', [OAuthController::class,'callback'])->name('callback');
-
-Route::post('/verify-email', [AuthController::class,'verifyEmail'])->name('email-verification');
 Route::get('/genres', [GenreController::class,'index'])->name('all-genres');
-
-
-Route::post('/post-movie', [MovieController::class,'create'])->name('post-movie');
-Route::post('/movie-description', [MovieController::class,'show'])->name('movie-description');
-
-
-Route::delete('/delete-movie', [MovieController::class,'destroy'])->name('delete-movie');
 Route::post('/search', [SearchController::class,'index'])->name('search');
-Route::post('/confirm-email', [AuthController::class,'confirmEmail'])->name('confirm-email');
-Route::patch('/reset-password', [AuthController::class,'resetPassword'])->name('reset-password');
-Route::get('/notifications', [NotificationController::class,'index'])->name('notifications');
-Route::post('/notification-read', [NotificationController::class,'markAsRead'])->name('mark-as-read');
-Route::get('/notifications-read', [NotificationController::class,'markAllRead'])->name('mark-all-read');
-Route::post('/update-user', [UserController::class,'update'])->name('update-user');
-Route::post('/update-email', [UserController::class,'updateEmail'])->name('update-email');
