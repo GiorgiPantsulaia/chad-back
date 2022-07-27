@@ -19,8 +19,8 @@ class MovieFactory extends Factory
     {
         return [
             'user_id'=>21,
-            'title'=>$this->faker->text(10),
-            'slug'=>$this->faker->text(10),
+            'title'=>$this->faker->unique()->text(10),
+            'slug'=>$this->faker->unique()->text(10),
             'thumbnail'=>'images/sparrow.jpg',
             'release_date'=>$this->faker->numberBetween(1990, 2023),
             'description'=>$this->faker->sentence(),

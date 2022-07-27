@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->json('title');
             $table->string('slug')->unique();
             $table->string('thumbnail')->nullable();
-            $table->integer('release_date');
+            $table->year('release_date');
             $table->json('description');
             $table->json('director');
             $table->bigInteger('income');

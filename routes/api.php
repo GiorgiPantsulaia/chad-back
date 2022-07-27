@@ -62,10 +62,8 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/logged-user', 'index')->name('logged.user');
 });
 
-Route::controller(OAuthController::class)->group(function () {
-    Route::get('/auth-callback', 'callback')->name('callback');
-    Route::post('/auth-redirect', 'redirect')->name('redirect');
-});
+Route::get('/auth-callback', 'callback')->name('callback');
+Route::post('/auth-redirect', 'redirect')->name('redirect');
 Route::post('/add-comment', [CommentController::class,'addComment'])->name('add.comment');
 Route::get('/genres', [GenreController::class,'index'])->name('all.genres');
 Route::post('/search', [SearchController::class,'index'])->name('search');
