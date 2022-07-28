@@ -11,9 +11,9 @@ use Spatie\Translatable\HasTranslations;
 
 class Quote extends Model
 {
-    protected $guarded = ['id'];
-
     use HasFactory,HasTranslations;
+    
+    protected $guarded = ['id'];
 
     public $translatable = ['body'];
 
@@ -25,10 +25,12 @@ class Quote extends Model
     {
         return $this->belongsTo(Movie::class, 'movie_id');
     }
+
     public function author() :BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
     public function likes() :BelongsToMany
     {
         return $this->belongsToMany(User::class);

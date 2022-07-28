@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Events\NewNotification;
 use App\Events\PostLiked;
+use App\Http\Requests\CreateLikeNotificationRequest;
+use App\Http\Requests\CreateQuoteRequest;
+use App\Http\Requests\UpdateQuoteRequest;
 use App\Models\Comment;
 use App\Models\Notification;
 use App\Models\Quote;
@@ -19,48 +22,33 @@ class QuoteController extends Controller
         return response()->json(Quote::latest()->with('movie')->with('author')->with('comments.author')->with('likes')->paginate(5), 200) ;
     }
 
-    public function likePost(Request $request): JsonResponse
+    public function likePost(Quote $quote, CreateLikeNotificationRequest $request): JsonResponse
     {
-        $quote = Quote::where('id', $request->id)->with('likes')->first();
-
         $quote->likes()->attach(auth()->user());
-
-        event(new PostLiked($quote));
+        event(new PostLiked($quote->load('likes')));
 
         if ($quote->author->id!==auth()->user()->id) {
-            Notification::create([
-                'created_at'=>Carbon::now(),
-                'user_id'=>auth()->user()->id,
-                'type'=>'like',
-                'state'=>'unread',
-                'recipient_id'=>$quote->author->id,
-                'quote_id'=>$quote->id,
-            ]);
+            $attributes = $request->validated();
+            $attributes['recipient_id']=$quote->author->id;
+            $attributes['quote_id']=$quote->id;
+            $notification=Notification::create($attributes);
 
-            $notification=Notification::where(['user_id'=>auth()->user()->id,
-            'type'=>'like',
-            'state'=>'unread',
-            'recipient_id'=>$quote->author->id,
-            'quote_id'=>$quote->id
-        ])->with('sender')->with('post.movie')->latest()->first();
-          
-            event(new NewNotification($notification));
+            event(new NewNotification($notification->load('sender', 'quote.movie')));
         }
         
         return response()->json(['success'=>'post has been liked'], 200);
     }
-    public function unlikePost(Request $request): JsonResponse
+    public function unlikePost(Quote $quote): JsonResponse
     {
-        $quote=Quote::where('id', $request->id)->with('likes')->first();
         $quote->likes()->detach(auth()->user());
-        event(new PostLiked($quote));
+        event(new PostLiked($quote->load('likes')));
 
-        $notification=Notification::where(['user_id'=>auth()->user()->id,
+        $notification=Notification::firstWhere(['user_id'=>auth()->user()->id,
         'type'=>'like',
         'state'=>'unread',
         'recipient_id'=>$quote->author->id,
         'quote_id'=>$quote->id
-    ])->first();
+    ]);
 
         if ($notification) {
             $notification->delete();
@@ -68,21 +56,9 @@ class QuoteController extends Controller
 
         return response()->json(['success'=>'post has been unliked'], 200);
     }
-    public function create(Request $request): JsonResponse
+    public function create(CreateQuoteRequest $request): JsonResponse
     {
-        $file = $request->file('img');
-        $file_name=time(). '.' . $file->getClientOriginalName();
-        $file->move(public_path('storage/quote-thumbnails'), $file_name);
-        
-        Quote::create([
-            'body'=>[
-                'en'=> $request->english_quote,
-                'ka'=> $request->georgian_quote
-            ],
-            'user_id'=>auth()->user()->id,
-            'movie_id'=>$request->movie_id,
-            'thumbnail'=>'storage/quote-thumbnails/'.$file_name
-            ]);
+        Quote::create($request->validated());
         return response()->json(['message'=>'Quote added successfully.'], 200);
     }
 
@@ -92,30 +68,11 @@ class QuoteController extends Controller
         return response()->json(['message'=>'Quote deleted successfully.'], 200);
     }
 
-    public function update(Request $request, Quote $quote) :JsonResponse
+    public function update(UpdateQuoteRequest $request, Quote $quote) :JsonResponse
     {
-        if ($request->file('img')) {
-            $file = $request->file('img');
-            $file_name=time(). '.' . $file->getClientOriginalName();
-            $file->move(public_path('storage/quote-thumbnails'), $file_name);
-            
-            $quote->update([
-                'body'=>[
-                    'en'=>$request->english_quote,
-                    'ka'=>$request->georgian_quote
-                ],
-                'thumbnail'=>'storage/quote-thumbnails/' . $file_name,
-            ]);
-            return response()->json(['message'=>'Quote updated successfully.'], 200);
-        } else {
-            $quote->update([
-                'body'=>[
-                    'en'=>$request->english_quote,
-                    'ka'=>$request->georgian_quote
-                ],
-            ]);
-            return response()->json(['message'=>'Quote updated successfully.'], 200);
-        }
+        $quote->update($request->validated());
+          
+        return response()->json(['message'=>'Quote updated successfully.'], 200);
     }
     public function show(Quote $quote) :JsonResponse
     {

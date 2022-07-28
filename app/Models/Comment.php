@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
 {
-    protected $guarded=['id'];
-    
     use HasFactory;
+    
+    protected $guarded=['id'];
 
     public function quote() :BelongsTo
     {

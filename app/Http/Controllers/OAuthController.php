@@ -28,7 +28,7 @@ class OAuthController extends Controller
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
                 'password'=>Hash::make($googleUser->getName() . '@' . $googleUser->getId()),
-                'email_verified_at'=>Carbon::now()
+                'email_verified_at'=>now()
             ]);
         };
         $token = auth('api')->login($user);

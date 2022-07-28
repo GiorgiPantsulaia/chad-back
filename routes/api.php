@@ -40,8 +40,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::controller(QuoteController::class)->group(function () {
         Route::get('/quotes/{quote}', 'show')->name('get.quote');
         Route::get('/all-quotes', 'index')->name('quotes');
-        Route::post('/like-post', 'likePost')->name('addLike');
-        Route::post('/unlike-post', 'unlikePost')->name('removeLike');
+        Route::post('/like/{quote}', 'likePost')->name('addLike');
+        Route::post('/unlike/{quote}', 'unlikePost')->name('removeLike');
         Route::post('/quotes', 'create')->name('post.quote');
         Route::patch('/update-quote/{quote}', 'update')->name('update.quote');
         Route::delete('/quote/{quote}', 'destroy')->name('delete.quote');

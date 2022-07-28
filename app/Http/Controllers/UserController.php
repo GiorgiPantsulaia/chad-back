@@ -45,7 +45,7 @@ class UserController extends Controller
             }
         }
         if ($request->password) {
-            $user->update(['password'=>Hash::make($request->password) ]);
+            $user->update(['password'=>$request->password ]);
         }
         return response()->json(['message'=>'Profile updated successfully',
         'user'=> $user,'confirmation_sent'=>$confirmation_sent], 200);

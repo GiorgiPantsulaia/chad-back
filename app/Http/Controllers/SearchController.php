@@ -22,6 +22,8 @@ class SearchController extends Controller
             return response()->json(['quotes'=>Quote::where('body->en', 'like', '%' . $search . '%')
             ->orWhere('body->ka', 'like', '%' . $search . '%')
             ->with('movie')->with('author')->with('comments.author')->with('likes')->get()], 200);
+        } else {
+            return response()->json('wrong search keyword', 422);
         }
     }
 }

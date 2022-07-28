@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PasswordResetRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Mail\EmailConfirmation;
 use App\Mail\EmailVerification;
@@ -29,11 +30,7 @@ class AuthController extends Controller
     }
     public function create(RegisterRequest $request) : JsonResponse
     {
-        $attributes = $request->validated();
-        $attributes['google_user']=false;
-        $user = User::create($attributes);
-        $user->verification_code = sha1(time());
-        $user->save();
+        $user = User::create($request->validated());
         if ($user != null) {
             $this->sendVerification($user->name, $user->email, $user->verification_code);
             return response()->json(['message'=>'Verification Email Sent!'], 200);
@@ -98,13 +95,10 @@ class AuthController extends Controller
             return response()->json(['error'=>'User does not exist'], 422);
         }
     }
-    public function resetPassword(Request $request) : JsonResponse
+    public function resetPassword(PasswordResetRequest $request) : JsonResponse
     {
-        $verification_code=$request->code;
-        $user=User::where('verification_code', $verification_code)->first();
-        $user->password=$request->password;
-        $user->save();
-
+        $user=User::where('verification_code', $request->code)->first();
+        $user->update($request->validated());
         return response()->json(['message'=>'Password updated successfully.'], 200);
     }
 }

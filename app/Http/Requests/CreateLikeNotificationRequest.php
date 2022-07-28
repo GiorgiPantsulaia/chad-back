@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class CreateLikeNotificationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +24,20 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'              => 'required|max:15|min:3|alpha_num',
-            'email'             => 'required|email|max:255|unique:users,email',
-            'password'          => 'required|confirmed|min:8|max:15|regex:/^[a-z0-9]*$/',
-            'google_user'       => 'nullable',
-            'verification_code' => 'nullable'
+            'created_at'=>'nullable',
+            'user_id'=>'required',
+            'type'=>'required',
+            'state'=>'required',
         ];
     }
+
     protected function prepareForValidation() :void
     {
         $this->merge([
-            'google_user'=>false,
-            'verification_code'=>sha1(time())
+        'created_at'=>now(),
+        'user_id' => auth()->user()->id,
+        'type'=>'like',
+        'state'=>'unread',
     ]);
     }
 }

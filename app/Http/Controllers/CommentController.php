@@ -4,41 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Events\NewNotification;
 use App\Events\PostCommented;
+use App\Http\Requests\CreateCommentNotificationRequest;
+use App\Http\Requests\CreateCommentRequest;
 use App\Models\Comment;
 use App\Models\Notification;
-use App\Models\Quote;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function create(Request $request): JsonResponse
+    public function create(CreateCommentRequest $request, CreateCommentNotificationRequest $notification_request): JsonResponse
     {
-        Comment::create(['user_id'=>auth()->user()->id,'quote_id'=>$request->quote_id,'body'=>$request->body]);
+        Comment::create($request->validated());
 
         $comment = Comment::where(['user_id'=>auth()->user()->id,'body'=>$request->body,'quote_id'=>$request->quote_id])->with('author')->first();
         
         event(new PostCommented($comment));
         
-        if ($request->author_id!==auth()->user()->id) {
-            Notification::create([
-            'created_at'=>Carbon::now(),
-            'user_id'=>auth()->user()->id,
-            'type'=>'comment',
-            'state'=>'unread',
-            'recipient_id'=>$request->author_id,
-            'quote_id'=>$request->quote_id,
-        ]);
-        
-            $notification=Notification::where(['user_id'=>auth()->user()->id,
-        'type'=>'comment',
-        'state'=>'unread',
-        'recipient_id'=>$request->author_id,
-        'quote_id'=>$request->quote_id,
-        ])->with('sender')->with('quote.movie')->latest()->first();
-        
-            event(new NewNotification($notification));
+        if ($request->recipient_id!==auth()->user()->id) {
+            $notification=Notification::create($notification_request->validated());
+            event(new NewNotification($notification->load('sender', 'quote.movie')));
         }
         return response()->json(['message'=>'Comment added successfully'], 200);
     }

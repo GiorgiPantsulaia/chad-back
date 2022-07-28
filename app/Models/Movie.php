@@ -11,10 +11,10 @@ use Spatie\Translatable\HasTranslations;
 
 class Movie extends Model
 {
+    use HasFactory,HasTranslations;
+    
     protected $guarded = ['id'];
     
-    use HasFactory,HasTranslations;
-
     public $translatable = ['title','director','description'];
 
     public function quotes() : HasMany
