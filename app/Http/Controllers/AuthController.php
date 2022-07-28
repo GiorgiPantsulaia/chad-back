@@ -89,7 +89,7 @@ class AuthController extends Controller
     }
     public function confirmEmail(Request $request) : JsonResponse
     {
-        $user = User::where(['email'=>$request->email,'google_user'=>false])->first();
+        $user = User::firstWhere(['email'=>$request->email,'google_user'=>false]);
 
         if ($user) {
             $this->sendConfirmation($user->name, $user->email, $user->verification_code);

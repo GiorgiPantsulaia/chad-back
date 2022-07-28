@@ -20,7 +20,7 @@ class OAuthController extends Controller
     public function callback() : RedirectResponse
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
-        $user = User::where('email', $googleUser->getEmail())->first();
+        $user = User::firstWhere('email', $googleUser->getEmail());
 
         if (!$user) {
             $user = User::Create([
