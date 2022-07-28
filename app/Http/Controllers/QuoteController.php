@@ -19,7 +19,7 @@ class QuoteController extends Controller
 {
     public function index(): JsonResponse
     {
-        return response()->json(Quote::latest()->with('movie')->with('author')->with('comments.author')->with('likes')->paginate(5), 200) ;
+        return response()->json(Quote::latest()->with('movie', 'author', 'comments.author', 'likes')->paginate(5), 200) ;
     }
 
     public function likePost(Quote $quote, CreateLikeNotificationRequest $request): JsonResponse

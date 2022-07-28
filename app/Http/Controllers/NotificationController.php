@@ -10,7 +10,7 @@ class NotificationController extends Controller
 {
     public function index() :JsonResponse
     {
-        return response()->json(Notification::where('recipient_id', auth()->user()->id)->with('sender')->with('quote.movie')->get(), 200);
+        return response()->json(Notification::where('recipient_id', auth()->user()->id)->with('sender', 'quote.movie')->get(), 200);
     }
 
     public function markAsRead(Request $request) :JsonResponse
