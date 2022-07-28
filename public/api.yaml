@@ -11,7 +11,7 @@ servers:
     description: production server
 
 paths:
-  /register-user:
+  /register:
     post:
       summary: Creates user.
       responses:

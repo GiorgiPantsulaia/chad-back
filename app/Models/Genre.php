@@ -9,9 +9,9 @@ use Spatie\Translatable\HasTranslations;
 
 class Genre extends Model
 {
-    protected $fillable = ['title'];
-
     use HasFactory,HasTranslations;
+    
+    protected $fillable = ['title'];
 
     public $translatable = ['title'];
 

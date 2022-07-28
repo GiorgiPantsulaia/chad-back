@@ -3,20 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
 class OAuthController extends Controller
 {
-    public function redirect(): JsonResponse
+    public function redirect() :JsonResponse
     {
         $url = Socialite::driver('google')->stateless()->redirect()->getTargetUrl();
 
-        return response()->json(['url'=>$url]);
+        return response()->json(['url'=>$url], 200);
     }
     public function callback() : RedirectResponse
     {
@@ -29,9 +28,8 @@ class OAuthController extends Controller
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
                 'password'=>Hash::make($googleUser->getName() . '@' . $googleUser->getId()),
+                'email_verified_at'=>Carbon::now()
             ]);
-            $user->email_verified_at=now();
-            $user->save();
         };
         $token = auth('api')->login($user);
         $expires_in = auth('api')->factory()->getTTL() * 60;

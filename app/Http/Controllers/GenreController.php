@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Genre;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GenreController extends Controller
 {
-    public function index()
+    public function index() :JsonResponse
     {
-        return Genre::all();
+        return response()->json(Genre::all(), 200);
     }
 }

@@ -13,11 +13,7 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-    public function addComment(Request $request): JsonResponse
+    public function create(Request $request): JsonResponse
     {
         Comment::create(['user_id'=>auth()->user()->id,'quote_id'=>$request->quote_id,'body'=>$request->body]);
 
@@ -40,7 +36,7 @@ class CommentController extends Controller
         'state'=>'unread',
         'recipient_id'=>$request->author_id,
         'quote_id'=>$request->quote_id,
-        ])->with('sender')->with('post.movie')->latest()->first();
+        ])->with('sender')->with('quote.movie')->latest()->first();
         
             event(new NewNotification($notification));
         }

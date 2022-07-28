@@ -13,11 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-    private static function sendConfirmation(string $name, mixed $email, mixed $verification_code)
+    private static function sendConfirmation(string $name, mixed $email, mixed $verification_code) :void
     {
         $data = [
             'name'              => $name,
@@ -26,27 +22,22 @@ class UserController extends Controller
         ];
         Mail::to($email)->send(new NewEmailConfirmation($data));
     }
-    public function index(): JsonResponse
-    {
-        return response()->json(['user'=>auth()->user()]);
-    }
-    public function update(UpdateUserRequest $request)
+    public function update(UpdateUserRequest $request, User $user) :JsonResponse
     {
         $confirmation_sent=false;
         if ($request->img) {
             $file = $request->file('img');
             $file_name=time(). '.' . $file->getClientOriginalName();
             $file->move(public_path('storage/profile-pictures'), $file_name);
-            User::where('email', $request->user_email)->update(['profile_pic'=>'storage/profile-pictures/'.$file_name]);
+            $user->update(['profile_pic'=>'storage/profile-pictures/'.$file_name]);
         }
         if ($request->name) {
-            User::where('email', $request->user_email)->update(['name'=>$request->name]);
+            $user->update(['name'=>$request->name]);
         }
         if ($request->email) {
             if (User::where('email', $request->email)->first()) {
                 return response()->json('User with this email already exists', 409);
             } else {
-                $user=User::where('email', $request->user_email)->first();
                 $user->verification_code=sha1(time());
                 $user->save();
                 $this->sendConfirmation($user->name, $request->email, $user->verification_code);
@@ -54,12 +45,12 @@ class UserController extends Controller
             }
         }
         if ($request->password) {
-            User::where('email', $request->user_email)->update(['password'=>Hash::make($request->password) ]);
+            $user->update(['password'=>Hash::make($request->password) ]);
         }
         return response()->json(['message'=>'Profile updated successfully',
-        'user'=> User::where('email', $request->user_email)->first(),'confirmation_sent'=>$confirmation_sent], 200);
+        'user'=> $user,'confirmation_sent'=>$confirmation_sent], 200);
     }
-    public function updateEmail(Request $request)
+    public function updateEmail(Request $request) :JsonResponse
     {
         User::where('verification_code', $request->verification_code)->update(['email'=>$request->email]);
         return response()->json('Email updated successfully', 200);

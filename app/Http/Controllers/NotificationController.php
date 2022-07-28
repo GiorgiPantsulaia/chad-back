@@ -8,25 +8,20 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-
     public function index() :JsonResponse
     {
-        return response()->json(Notification::where('recipient_id', auth()->user()->id)->with('sender')->with('post.movie')->get());
+        return response()->json(Notification::where('recipient_id', auth()->user()->id)->with('sender')->with('quote.movie')->get(), 200);
     }
 
     public function markAsRead(Request $request) :JsonResponse
     {
         Notification::where('id', $request->id)->update(['state'=>'read']);
-        return response()->json('Notification marked as read');
+        return response()->json('Notification marked as read', 200);
     }
-    public function markAllRead()
+    public function markAllRead() :JsonResponse
     {
         Notification::where('recipient_id', auth()->user()->id)->update(['state'=>'read']);
         
-        return response()->json('Notifications marked as read');
+        return response()->json('Notifications marked as read', 200);
     }
 }

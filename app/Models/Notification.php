@@ -20,7 +20,7 @@ class Notification extends Model
     {
         return $this->belongsTo(User::class, 'recipient_id');
     }
-    public function post() : BelongsTo
+    public function quote() : BelongsTo
     {
         return $this->belongsTo(Quote::class, 'quote_id');
     }

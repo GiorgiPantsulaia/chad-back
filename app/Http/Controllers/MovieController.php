@@ -9,18 +9,15 @@ use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
-    private function slugify(string $string)
+    private function slugify(string $string) :string
     {
         return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string), '-'));
     }
     public function index(): JsonResponse
     {
         $user = auth()->user();
-        return response()->json(['data'=>Movie::latest()->where('user_id', $user->id)->with('quotes')->get()]);
+        $movies=Movie::latest()->where('user_id', $user->id)->with('quotes')->get();
+        return response()->json($movies, 200);
     }
     public function create(Request $request): JsonResponse
     {
@@ -51,39 +48,38 @@ class MovieController extends Controller
         $genres = Genre::whereIn('title->'.$request->lang, explode(",", $request->chosen_genres))->get();
         $movie->genres()->attach($genres);
 
-        return response()->json(['message'=>'Movie added successfully.']);
+        return response()->json(['message'=>'Movie added successfully.'], 200);
     }
 
     public function show(Request $request) : JsonResponse
     {
-        $movie=Movie::where('slug', $request->slug)->with('author')->with('genres')->with(['quotes'=>['comments.author','author','movie','likes']])->first();
+        $movie=Movie::where('slug', $request->slug)->with(['author','genres','quotes'=>['comments.author','author','movie','likes']])->first();
         if ($movie) {
-            return response()->json(['data'=>$movie]);
+            return response()->json($movie, 200);
         } else {
             return response()->json('error', 404);
         }
     }
-    public function destroy(Request $request) : JsonResponse
+    public function destroy(Movie $movie) : JsonResponse
     {
-        Movie::destroy($request->id);
-        return response()->json(['message'=>'Movie deleted successfully.']);
+        $movie->delete();
+        return response()->json(['message'=>'Movie deleted successfully.'], 200);
     }
-    public function update(Request $request)
+    public function update(Request $request, Movie $movie) :JsonResponse
     {
         if ($request->img) {
             $file = $request->file('img');
             $file_name=time(). '.' . $file->getClientOriginalName();
             $file->move(public_path('storage/movie-thumbnails'), $file_name);
-            Movie::where('id', $request->id)->update(['thumbnail'=>'storage/movie-thumbnails/'.$file_name]);
+            $movie->update(['thumbnail'=>'storage/movie-thumbnails/'.$file_name]);
         }
         if ($request->chosen_genres) {
             $genres=Genre::whereIn('title->'.$request->lang, explode(",", $request->chosen_genres))->get();
-            $movie=Movie::where('id', $request->id)->first();
             $movie->genres()->detach();
             $movie->genres()->attach($genres);
         }
         $slug = $this->slugify($request->english_title);
-        Movie::where('id', $request->id)->update([
+        $movie->update([
             'title'=>[
                 'en'=> $request->english_title,
                 'ka'=> $request->georgian_title

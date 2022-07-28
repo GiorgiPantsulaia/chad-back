@@ -23,7 +23,7 @@ class QuoteFactory extends Factory
             'user_id' => User::factory(),
             'movie_id' => Movie::factory(),
             'body' => $this->faker->sentence(),
-            'thumbnail'=>'images/sparrow.jpg',
+            'thumbnail'=>null,
         ];
     }
 }

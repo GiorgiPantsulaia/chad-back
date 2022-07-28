@@ -11,18 +11,12 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class QuoteController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
     public function index(): JsonResponse
     {
-        return response()->json(['data'=>Quote::latest()->with('movie')->with('author')->with('comments.author')->with('likes')->paginate(5)]) ;
+        return response()->json(Quote::latest()->with('movie')->with('author')->with('comments.author')->with('likes')->paginate(5), 200) ;
     }
 
     public function likePost(Request $request): JsonResponse
@@ -89,45 +83,44 @@ class QuoteController extends Controller
             'movie_id'=>$request->movie_id,
             'thumbnail'=>'storage/quote-thumbnails/'.$file_name
             ]);
-        return response()->json(['message'=>'Quote added successfully.']);
+        return response()->json(['message'=>'Quote added successfully.'], 200);
     }
 
-    public function destroy(Request $request): JsonResponse
+    public function destroy(Quote $quote): JsonResponse
     {
-        Quote::where('id', $request->id)->delete();
-        return response()->json(['message'=>'Quote deleted successfully.']);
+        $quote->delete();
+        return response()->json(['message'=>'Quote deleted successfully.'], 200);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, Quote $quote) :JsonResponse
     {
         if ($request->file('img')) {
             $file = $request->file('img');
             $file_name=time(). '.' . $file->getClientOriginalName();
             $file->move(public_path('storage/quote-thumbnails'), $file_name);
             
-            Quote::where('id', $request->id)->update([
+            $quote->update([
                 'body'=>[
                     'en'=>$request->english_quote,
                     'ka'=>$request->georgian_quote
                 ],
                 'thumbnail'=>'storage/quote-thumbnails/' . $file_name,
             ]);
-            return response()->json(['message'=>'Quote updated successfully.']);
+            return response()->json(['message'=>'Quote updated successfully.'], 200);
         } else {
-            Quote::where('id', $request->id)->update([
+            $quote->update([
                 'body'=>[
                     'en'=>$request->english_quote,
                     'ka'=>$request->georgian_quote
                 ],
             ]);
-            return response()->json(['message'=>'Quote updated successfully.']);
+            return response()->json(['message'=>'Quote updated successfully.'], 200);
         }
     }
-    public function show(Request $request)
+    public function show(Quote $quote) :JsonResponse
     {
-        $quote=Quote::where('id', $request->id)->with('author')->with('movie')->with('comments.author')->with('likes')->first();
         if ($quote) {
-            return response()->json($quote);
+            return response()->json($quote->load(['author', 'movie', 'comments.author', 'likes']), 200);
         } else {
             return response()->json('error', 404);
         }

@@ -8,19 +8,18 @@ use App\Mail\EmailVerification;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-    private static function sendVerification(string $name, mixed $email, mixed $verification_code)
+    private static function sendVerification(string $name, mixed $email, mixed $verification_code) :void
     {
         Mail::to($email)->send(new EmailVerification([
             'name'              => $name,
             'verification_code' => $verification_code,
         ]));
     }
-    private static function sendConfirmation(string $name, mixed $email, mixed $verification_code)
+    private static function sendConfirmation(string $name, mixed $email, mixed $verification_code) :void
     {
         $data = [
             'name'              => $name,
@@ -51,10 +50,10 @@ class AuthController extends Controller
         $credentials = $request->only([$nameOrEmail, 'password']);
         $user = User::where('email', $request->name)->orWhere('name', $request->name)->first();
         if ($user && $user->email_verified_at===null) {
-            return response()->json(['error'=>'Check your email to activate account.']);
+            return response()->json(['error'=>'Check your email to activate account.'], 200);
         } elseif (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'incorrect credentials'], 401);
-        } elseif (Auth::attempt($credentials)) {
+        } elseif (auth()->attempt($credentials)) {
             if ($request->remember_me) {
                 $token=auth('api')->setTTL(7200)->attempt($credentials);
             }
@@ -71,24 +70,24 @@ class AuthController extends Controller
             'user_email'=>auth()->user()->email,
             'user_id'=>auth()->user()->id,
             'user_pfp'=>auth()->user()->profile_pic
-        ]);
+        ], 200);
     }
     public function logout() : JsonResponse
     {
         auth()->logout(true);
-        return response()->json(['message'=>"Logged out successfully.auth token invalidated."]) ;
+        return response()->json(['message'=>"Logged out successfully.auth token invalidated."], 200) ;
     }
     public function verifyEmail(Request $request) : JsonResponse
     {
         $verification_code = $request->token;
-        $user = User::where('verification_code', $verification_code)->first();
+        $user = User::firstWhere('verification_code', $verification_code);
 
         if ($user !== null) {
             $user->markEmailAsVerified();
             return response()->json(['message'=>'Email Activated Successfully'], 200);
         }
     }
-    public function confirmEmail(Request $request)
+    public function confirmEmail(Request $request) : JsonResponse
     {
         $user = User::where(['email'=>$request->email,'google_user'=>false])->first();
 
@@ -99,7 +98,7 @@ class AuthController extends Controller
             return response()->json(['error'=>'User does not exist'], 422);
         }
     }
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request) : JsonResponse
     {
         $verification_code=$request->code;
         $user=User::where('verification_code', $verification_code)->first();
