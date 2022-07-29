@@ -4,16 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Events\NewNotification;
 use App\Events\PostLiked;
-use App\Http\Requests\CreateLikeNotificationRequest;
-use App\Http\Requests\CreateQuoteRequest;
-use App\Http\Requests\UpdateQuoteRequest;
-use App\Models\Comment;
+use App\Http\Requests\NotificationRequests\CreateLikeNotificationRequest;
+use App\Http\Requests\QuoteRequests\CreateQuoteRequest;
+use App\Http\Requests\QuoteRequests\UpdateQuoteRequest;
 use App\Models\Notification;
 use App\Models\Quote;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class QuoteController extends Controller
 {
@@ -36,7 +32,7 @@ class QuoteController extends Controller
             event(new NewNotification($notification->load('sender', 'quote.movie')));
         }
         
-        return response()->json(['success'=>'post has been liked'], 200);
+        return response()->json(['success'=>true], 200);
     }
     public function unlikePost(Quote $quote): JsonResponse
     {
@@ -54,11 +50,17 @@ class QuoteController extends Controller
             $notification->delete();
         }
 
-        return response()->json(['success'=>'post has been unliked'], 200);
+        return response()->json(['success'=>true], 200);
     }
     public function create(CreateQuoteRequest $request): JsonResponse
     {
-        Quote::create($request->validated());
+        $attributes=$request->validated();
+        $file = $request->file('img');
+        $file_name=time(). '.' . $file->getClientOriginalName();
+        $file->move(public_path('storage/quote-thumbnails'), $file_name);
+        $attributes['thumbnail']='storage/quote-thumbnails/'.$file_name;
+
+        Quote::create($attributes);
         return response()->json(['message'=>'Quote added successfully.'], 200);
     }
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\NotificationRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateQuoteRequest extends FormRequest
+class CreateLikeNotificationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,26 +24,20 @@ class CreateQuoteRequest extends FormRequest
     public function rules()
     {
         return [
-            'body'=>'required',
+            'created_at'=>'nullable',
             'user_id'=>'required',
-            'movie_id'=>'required',
-            'thumbnail'=>'required'
+            'type'=>'required',
+            'state'=>'required',
         ];
     }
+
     protected function prepareForValidation() :void
     {
-        $file = $this->file('img');
-        $file_name=time(). '.' . $file->getClientOriginalName();
-        $file->move(public_path('storage/quote-thumbnails'), $file_name);
-
         $this->merge([
-        'body'=>[
-            'en'=> $this->english_quote,
-            'ka'=> $this->georgian_quote
-        ],
+        'created_at'=>now(),
         'user_id' => auth()->user()->id,
-        'thumbnail'=>'storage/quote-thumbnails/'.$file_name
-       
+        'type'=>'like',
+        'state'=>'unread',
     ]);
     }
 }

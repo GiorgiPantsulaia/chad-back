@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NewNotification;
 use App\Events\PostCommented;
-use App\Http\Requests\CreateCommentNotificationRequest;
+use app\Http\Requests\NotificationRequests\CommentNotificationRequest;
 use App\Http\Requests\CreateCommentRequest;
 use App\Models\Comment;
 use App\Models\Notification;
@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
-    public function create(CreateCommentRequest $request, CreateCommentNotificationRequest $notification_request): JsonResponse
+    public function create(CreateCommentRequest $request, CommentNotificationRequest $notification_request): JsonResponse
     {
         Comment::create($request->validated());
 

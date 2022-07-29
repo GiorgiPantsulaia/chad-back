@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PasswordResetRequest;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\AuthRequests\LoginRequest;
+use App\Http\Requests\AuthRequests\PasswordResetRequest;
+use App\Http\Requests\AuthRequests\RegisterRequest;
 use App\Mail\EmailConfirmation;
 use App\Mail\EmailVerification;
 use App\Models\User;
@@ -36,15 +37,9 @@ class AuthController extends Controller
             return response()->json(['message'=>'Verification Email Sent!'], 200);
         }
     }
-    public function login(Request $request) : JsonResponse
+    public function login(LoginRequest $request) : JsonResponse
     {
-        $login = $request->name;
-
-        $nameOrEmail = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-
-        $request->merge([$nameOrEmail => $login]);
-
-        $credentials = $request->only([$nameOrEmail, 'password']);
+        $credentials = $request->validated();
         $user = User::where('email', $request->name)->orWhere('name', $request->name)->first();
         if ($user && $user->email_verified_at===null) {
             return response()->json(['error'=>'Check your email to activate account.'], 200);
