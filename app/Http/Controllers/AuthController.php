@@ -94,6 +94,10 @@ class AuthController extends Controller
 			$user->markEmailAsVerified();
 			return response()->json(['message'=>'Email Activated Successfully'], 200);
 		}
+		else
+		{
+			return response()->json(['error'=>'invalid token'], 400);
+		}
 	}
 
 	public function confirmEmail(Request $request): JsonResponse
@@ -107,14 +111,21 @@ class AuthController extends Controller
 		}
 		else
 		{
-			return response()->json(['error'=>'User does not exist'], 404);
+			return response()->json(['error'=>'User not found'], 404);
 		}
 	}
 
 	public function resetPassword(PasswordResetRequest $request): JsonResponse
 	{
 		$user = User::where('verification_code', $request->code)->first();
-		$user->update($request->validated());
-		return response()->json(['message'=>'Password updated successfully.'], 200);
+		if ($user)
+		{
+			$user->update($request->validated());
+			return response()->json(['message'=>'Password updated successfully.'], 200);
+		}
+		else
+		{
+			return response()->json(['error'=>'User not found'], 404);
+		}
 	}
 }

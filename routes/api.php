@@ -55,8 +55,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::controller(NotificationController::class)->group(function () {
 		Route::get('/notifications', 'index')->name('notifications');
-		Route::post('/notifications-read', 'markAllRead')->name('mark.all.read');
-		Route::patch('/notification-read', 'markAsRead')->name('mark.as.read');
+		Route::post('/notifications-read', 'markAllRead')->name('mark.all-read');
+		Route::patch('/notification-read', 'markAsRead')->name('mark.as-read');
 	});
 
 	Route::controller(UserController::class)->group(function () {

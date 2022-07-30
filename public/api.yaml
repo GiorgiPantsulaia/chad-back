@@ -164,6 +164,18 @@ paths:
                   message:
                     type: string
                     example: "Email confirmation sent."
+        "404":
+          description: A JSON response with error message
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
       requestBody:
         required: true
         content:
@@ -171,7 +183,108 @@ paths:
             schema:
               type: object
               properties:
-                email:
+                token:
                   type: string
                   example: "johndoe@gmail.com"
-# this is not finished
+  /verify-email:
+    post:
+      summary: Verifies user email with token
+      responses:
+        "200":
+          description: A JSON response with success message
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  message:
+                    type: string
+                    example: "Email verified successfully."
+        "400":
+          description: Invalid token error
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  error:
+                    type: string
+                    example: "invalid token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "ce4eba3dcc2cb3ede7ba3be4b6096de1b35990de"
+  /reset-password:
+    patch:
+      summary: Resets user password
+      responses:
+        "200":
+          description: A JSON response with success message
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  message:
+                    type: string
+                    example: "Password updated successfully."
+        "422":
+          description: Invalid password format
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  message:
+                    type: string
+                    example: "The password must be at least 8 characters. (and 1 more error)"
+                  errors:
+                    type: object
+                    items:
+                      type: array
+                    properties:
+                      password:
+                        example:
+                          [
+                            "The password must be at least 8 characters.",
+                            "The password format is invalid.",
+                          ]
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: "yvitelidatvi123"
+                code:
+                  type: string
+                  example: "ce4eba3dcc2cb3ede7ba3be4b6096de1b35990de"
