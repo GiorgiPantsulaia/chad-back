@@ -8,6 +8,7 @@ use App\Models\Genre;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MovieController extends Controller
 {
@@ -25,16 +26,20 @@ class MovieController extends Controller
 
 	public function create(CreateMovieRequest $request): JsonResponse
 	{
-		$file = $request->file('img');
-		$file_name = time() . '.' . $file->getClientOriginalName();
-		$file->move(public_path('storage/movie-thumbnails'), $file_name);
-		$attributes = $request->validated();
-		$attributes['slug'] = $this->slugify($request->english_title);
-		$attributes['thumbnail'] = 'storage/movie-thumbnails/' . $file_name;
-		$movie = Movie::create($attributes);
+		DB::transaction(
+			function () use ($request) {
+				$file = $request->file('img');
+				$file_name = time() . '.' . $file->getClientOriginalName();
+				$file->move(public_path('storage/movie-thumbnails'), $file_name);
+				$attributes = $request->validated();
+				$attributes['slug'] = $this->slugify($request->english_title);
+				$attributes['thumbnail'] = 'storage/movie-thumbnails/' . $file_name;
+				$movie = Movie::create($attributes);
 
-		$genres = Genre::whereIn('title->' . $request->lang, explode(',', $request->chosen_genres))->get();
-		$movie->genres()->attach($genres);
+				$genres = Genre::whereIn('title->' . $request->lang, explode(',', $request->chosen_genres))->get();
+				$movie->genres()->attach($genres);
+			}
+		);
 
 		return response()->json(['message'=>'Movie added successfully.'], 201);
 	}
@@ -60,22 +65,27 @@ class MovieController extends Controller
 
 	public function update(UpdateMovieRequest $request, Movie $movie): JsonResponse
 	{
-		if ($request->img)
-		{
-			$file = $request->file('img');
-			$file_name = time() . '.' . $file->getClientOriginalName();
-			$file->move(public_path('storage/movie-thumbnails'), $file_name);
-			$movie->update(['thumbnail'=>'storage/movie-thumbnails/' . $file_name]);
-		}
-		if ($request->chosen_genres)
-		{
-			$genres = Genre::whereIn('title->' . $request->lang, explode(',', $request->chosen_genres))->get();
-			$movie->genres()->detach();
-			$movie->genres()->attach($genres);
-		}
-		$attributes = $request->validated();
-		$attributes['slug'] = $this->slugify($request->english_title);
-		$movie->update($attributes);
+		DB::transaction(
+			function () use ($request, $movie) {
+				if ($request->img)
+				{
+					$file = $request->file('img');
+					$file_name = time() . '.' . $file->getClientOriginalName();
+					$file->move(public_path('storage/movie-thumbnails'), $file_name);
+					$movie->update(['thumbnail'=>'storage/movie-thumbnails/' . $file_name]);
+				}
+				if ($request->chosen_genres)
+				{
+					$genres = Genre::whereIn('title->' . $request->lang, explode(',', $request->chosen_genres))->get();
+					$movie->genres()->detach();
+					$movie->genres()->attach($genres);
+				}
+				$attributes = $request->validated();
+				$attributes['slug'] = $this->slugify($request->english_title);
+				$movie->update($attributes);
+			}
+		);
+
 		return response()->json('Movie updated successfully', 200);
 	}
 }

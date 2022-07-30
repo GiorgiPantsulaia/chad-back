@@ -10,6 +10,7 @@ use App\Http\Requests\QuoteRequests\UpdateQuoteRequest;
 use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class QuoteController extends Controller
 {
@@ -38,20 +39,24 @@ class QuoteController extends Controller
 
 	public function unlikePost(Quote $quote): JsonResponse
 	{
-		$quote->likes()->detach(auth()->user());
-		event(new PostLiked($quote->load('likes')));
+		DB::transaction(
+			function () use ($quote) {
+				$quote->likes()->detach(auth()->user());
+				event(new PostLiked($quote->load('likes')));
 
-		$notification = Notification::firstWhere(['user_id'=> auth()->user()->id,
-			'type'                                            => 'like',
-			'state'                                           => 'unread',
-			'recipient_id'                                    => $quote->author->id,
-			'quote_id'                                        => $quote->id,
-		]);
+				$notification = Notification::firstWhere(['user_id'=> auth()->user()->id,
+					'type'                                            => 'like',
+					'state'                                           => 'unread',
+					'recipient_id'                                    => $quote->author->id,
+					'quote_id'                                        => $quote->id,
+				]);
 
-		if ($notification)
-		{
-			$notification->delete();
-		}
+				if ($notification)
+				{
+					$notification->delete();
+				}
+			}
+		);
 
 		return response()->json(['success'=>true], 200);
 	}
