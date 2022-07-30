@@ -17,9 +17,12 @@
             flex-direction: column;
             align-items: center;
             padding-top: 100px;
+            justify-content: center;
+            width: 30%;
+            margin: auto;
         "
     >
-        <img src="https://i.ibb.co/CBZJYZX/Vector.png" alt="quote" width="30" />
+        <img src="https://i.ibb.co/CBZJYZX/Vector.png" alt="quote"  style="width: 40px; height: 30px;margin-top: 10px"/>
         <h2
             style="
                 color: #ddccaa;

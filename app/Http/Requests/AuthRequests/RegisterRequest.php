@@ -24,9 +24,9 @@ class RegisterRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'name'              => 'required|max:15|min:3|alpha_num',
+			'name'              => 'required|max:15|min:3|regex:/^[a-z0-9 ]*$/',
 			'email'             => 'required|email|max:255|unique:users,email',
-			'password'          => 'required|confirmed|min:8|max:15|regex:/^[a-z0-9]*$/',
+			'password'          => 'required|confirmed|min:8|max:15|regex:/^[a-z0-9 ]*$/',
 			'google_user'       => 'nullable',
 		];
 	}

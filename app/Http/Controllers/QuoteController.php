@@ -65,7 +65,7 @@ class QuoteController extends Controller
 		$attributes['thumbnail'] = 'storage/quote-thumbnails/' . $file_name;
 
 		Quote::create($attributes);
-		return response()->json(['message'=>'Quote added successfully.'], 200);
+		return response()->json(['message'=>'Quote added successfully.'], 201);
 	}
 
 	public function destroy(Quote $quote): JsonResponse

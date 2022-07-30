@@ -39,7 +39,7 @@ class AuthController extends Controller
 		if ($user != null)
 		{
 			$this->sendVerification($user->name, $user->email, $user->verification_code);
-			return response()->json(['message'=>'Verification Email Sent!'], 200);
+			return response()->json(['message'=>'Verification Email Sent!'], 201);
 		}
 	}
 
@@ -49,7 +49,7 @@ class AuthController extends Controller
 		$user = User::where('email', $request->name)->orWhere('name', $request->name)->first();
 		if ($user && $user->email_verified_at === null)
 		{
-			return response()->json(['error'=>'Check your email to activate account.'], 200);
+			return response()->json(['message'=>'Check your email to activate account.'], 403);
 		}
 		elseif (!$token = auth('api')->attempt($credentials))
 		{
@@ -107,7 +107,7 @@ class AuthController extends Controller
 		}
 		else
 		{
-			return response()->json(['error'=>'User does not exist'], 422);
+			return response()->json(['error'=>'User does not exist'], 404);
 		}
 	}
 

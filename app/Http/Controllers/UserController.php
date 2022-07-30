@@ -24,13 +24,16 @@ class UserController extends Controller
 	public function update(UpdateUserRequest $request, User $user): JsonResponse
 	{
 		$confirmation_sent = false;
+
 		if ($request->img)
 		{
 			$file = $request->file('img');
 			$file_name = time() . '.' . $file->getClientOriginalName();
 			$file->move(public_path('storage/profile-pictures'), $file_name);
-			$user->update(['profile_pic'=>'storage/profile-pictures/' . $file_name]);
+			$user->profile_pic = 'storage/profile-pictures/' . $file_name;
+			$user->save();
 		}
+
 		if ($request->name)
 		{
 			$user->update(['name'=>$request->name]);

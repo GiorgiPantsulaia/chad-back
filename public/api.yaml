@@ -13,10 +13,10 @@ servers:
 paths:
   /register:
     post:
-      summary: Creates user.
+      summary: Creates a user.
       responses:
-        "200":
-          description:
+        "201":
+          description: A success message.
           content:
             application/json:
               schema:
@@ -33,7 +33,144 @@ paths:
                   password_confirmation:
                     type: string
                 example: # Sample data
-                  name: John Doe
+                  name: john doe
                   email: johnny@example.com
                   password: test12345
                   password_confirmation: test12345
+        "422":
+          description: Unprocessable content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The name format is invalid. (and 2 more errors)"
+                  errors:
+                    type: object
+                    items:
+                      type: array
+                    properties:
+                      name:
+                        example: ["The name format is invalid."]
+                      email:
+                        example: ["The email must be a valid email address."]
+                      password:
+                        example: ["The password must be at least 8 characters."]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+  /login:
+    post:
+      summary: Authenticates a user.
+      responses:
+        "200":
+          description: A JSON array containing the auth token
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  name:
+                    type: string
+                  password:
+                    type: string
+                example: # Sample data
+                  access_token: "luI1Ymbfu0lo8srrXebTL7f638coXKxztjEvFml2"
+                  token_type: "bearer"
+                  expires_in: 3600
+                  username: "johndoe123"
+                  user_email: "john@gmail.com"
+                  user_id: 6
+                  user_pfp: "storage/profile-pictures/1659195277.my-picture.png"
+
+        "401":
+          description: User does not exist message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "incorrect credentials"
+        "403":
+          description: Email not activated message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Check your email to activate account."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "john123"
+                password:
+                  type: string
+                  example: "password123"
+  /logout:
+    post:
+      summary: Logs user out.
+      responses:
+        "200":
+          description: A JSON response with success message
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully."
+  /confirm-email:
+    post:
+      summary: Sends confirmation email.
+      responses:
+        "200":
+          description: A JSON response with success message
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  message:
+                    type: string
+                    example: "Email confirmation sent."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "johndoe@gmail.com"

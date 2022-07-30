@@ -36,7 +36,7 @@ class MovieController extends Controller
 		$genres = Genre::whereIn('title->' . $request->lang, explode(',', $request->chosen_genres))->get();
 		$movie->genres()->attach($genres);
 
-		return response()->json(['message'=>'Movie added successfully.'], 200);
+		return response()->json(['message'=>'Movie added successfully.'], 201);
 	}
 
 	public function show(Request $request): JsonResponse
