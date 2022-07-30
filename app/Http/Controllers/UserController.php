@@ -11,46 +11,55 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
-    private static function sendConfirmation(string $name, mixed $email, mixed $verification_code) :void
-    {
-        $data = [
-            'name'              => $name,
-            'email'=>$email,
-            'verification_code' => $verification_code,
-        ];
-        Mail::to($email)->send(new NewEmailConfirmation($data));
-    }
-    public function update(UpdateUserRequest $request, User $user) :JsonResponse
-    {
-        $confirmation_sent=false;
-        if ($request->img) {
-            $file = $request->file('img');
-            $file_name=time(). '.' . $file->getClientOriginalName();
-            $file->move(public_path('storage/profile-pictures'), $file_name);
-            $user->update(['profile_pic'=>'storage/profile-pictures/'.$file_name]);
-        }
-        if ($request->name) {
-            $user->update(['name'=>$request->name]);
-        }
-        if ($request->email) {
-            if (User::where('email', $request->email)->first()) {
-                return response()->json('User with this email already exists', 409);
-            } else {
-                $user->verification_code=sha1(time());
-                $user->save();
-                $this->sendConfirmation($user->name, $request->email, $user->verification_code);
-                $confirmation_sent=true;
-            }
-        }
-        if ($request->password) {
-            $user->update(['password'=>$request->password ]);
-        }
-        return response()->json(['message'=>'Profile updated successfully',
-        'user'=> $user,'confirmation_sent'=>$confirmation_sent], 200);
-    }
-    public function updateEmail(Request $request) :JsonResponse
-    {
-        User::where('verification_code', $request->verification_code)->update(['email'=>$request->email]);
-        return response()->json('Email updated successfully', 200);
-    }
+	private static function sendConfirmation(string $name, mixed $email, mixed $verification_code): void
+	{
+		$data = [
+			'name'              => $name,
+			'email'             => $email,
+			'verification_code' => $verification_code,
+		];
+		Mail::to($email)->send(new NewEmailConfirmation($data));
+	}
+
+	public function update(UpdateUserRequest $request, User $user): JsonResponse
+	{
+		$confirmation_sent = false;
+		if ($request->img)
+		{
+			$file = $request->file('img');
+			$file_name = time() . '.' . $file->getClientOriginalName();
+			$file->move(public_path('storage/profile-pictures'), $file_name);
+			$user->update(['profile_pic'=>'storage/profile-pictures/' . $file_name]);
+		}
+		if ($request->name)
+		{
+			$user->update(['name'=>$request->name]);
+		}
+		if ($request->email)
+		{
+			if (User::where('email', $request->email)->first())
+			{
+				return response()->json('User with this email already exists', 409);
+			}
+			else
+			{
+				$user->verification_code = sha1(time());
+				$user->save();
+				$this->sendConfirmation($user->name, $request->email, $user->verification_code);
+				$confirmation_sent = true;
+			}
+		}
+		if ($request->password)
+		{
+			$user->update(['password'=>$request->password]);
+		}
+		return response()->json(['message'=> 'Profile updated successfully',
+			'user'                           => $user, 'confirmation_sent'=>$confirmation_sent, ], 200);
+	}
+
+	public function updateEmail(Request $request): JsonResponse
+	{
+		User::where('verification_code', $request->verification_code)->update(['email'=>$request->email]);
+		return response()->json('Email updated successfully', 200);
+	}
 }

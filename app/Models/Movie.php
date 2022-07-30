@@ -11,24 +11,24 @@ use Spatie\Translatable\HasTranslations;
 
 class Movie extends Model
 {
-    use HasFactory,HasTranslations;
-    
-    protected $guarded = ['id'];
-    
-    public $translatable = ['title','director','description'];
+	use HasFactory,HasTranslations;
 
-    public function quotes() : HasMany
-    {
-        return $this->hasMany(Quote::class);
-    }
+	protected $guarded = ['id'];
 
-    public function author() :BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+	public $translatable = ['title', 'director', 'description'];
 
-    public function genres() :BelongsToMany
-    {
-        return $this->belongsToMany(Genre::class);
-    }
+	public function quotes(): HasMany
+	{
+		return $this->hasMany(Quote::class);
+	}
+
+	public function author(): BelongsTo
+	{
+		return $this->belongsTo(User::class, 'user_id');
+	}
+
+	public function genres(): BelongsToMany
+	{
+		return $this->belongsToMany(Genre::class);
+	}
 }

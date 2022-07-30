@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Notification;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -15,7 +14,8 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('notification.{recipient_id}', function ($user, $recipient_id) {
-    if ((int)$recipient_id=== auth()->user()->id) {
-        return true;
-    }
+	if ((int)$recipient_id === auth()->user()->id)
+	{
+		return true;
+	}
 });

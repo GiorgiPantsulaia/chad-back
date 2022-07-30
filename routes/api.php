@@ -9,8 +9,6 @@ use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
-use App\Models\Quote;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,47 +22,47 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/register', 'create')->name('signup');
-    Route::post('/login', 'login')->name('signin');
-    Route::post('/logout', 'logout')->name('logout');
-    Route::post('/confirm-email', 'confirmEmail')->name('confirm.email');
-    Route::post('/verify-email', 'verifyEmail')->name('email.verification');
-    Route::patch('/reset-password', 'resetPassword')->name('reset.password');
+	Route::post('/register', 'create')->name('signup');
+	Route::post('/login', 'login')->name('signin');
+	Route::post('/logout', 'logout')->name('logout');
+	Route::post('/confirm-email', 'confirmEmail')->name('confirm.email');
+	Route::post('/verify-email', 'verifyEmail')->name('email.verification');
+	Route::patch('/reset-password', 'resetPassword')->name('reset.password');
 });
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::post('/comments', [CommentController::class,'create'])->name('add.comment');
-    Route::get('/genres', [GenreController::class,'index'])->name('genres');
-    Route::post('/search', [SearchController::class,'index'])->name('search');
+	Route::post('/comments', [CommentController::class, 'create'])->name('add.comment');
+	Route::get('/genres', [GenreController::class, 'index'])->name('genres');
+	Route::post('/search', [SearchController::class, 'index'])->name('search');
 
-    Route::controller(QuoteController::class)->group(function () {
-        Route::get('/quotes/{quote}', 'show')->name('get.quote');
-        Route::get('/all-quotes', 'index')->name('quotes');
-        Route::post('/like/{quote}', 'likePost')->name('addLike');
-        Route::post('/unlike/{quote}', 'unlikePost')->name('removeLike');
-        Route::post('/quotes', 'create')->name('post.quote');
-        Route::patch('/update-quote/{quote}', 'update')->name('update.quote');
-        Route::delete('/quote/{quote}', 'destroy')->name('delete.quote');
-    });
-    
-    Route::controller(MovieController::class)->group(function () {
-        Route::get('/user-movies', 'index')->name('user.movies');
-        Route::post('/movies', 'create')->name('post.movie');
-        Route::post('/movie-description', 'show')->name('movie.description');
-        Route::patch('/edit-movie/{movie}', 'update')->name('update.movie');
-        Route::delete('/movie/{movie}', 'destroy')->name('delete.movie');
-    });
-    
-    Route::controller(NotificationController::class)->group(function () {
-        Route::get('/notifications', 'index')->name('notifications');
-        Route::post('/notifications-read', 'markAllRead')->name('mark.all.read');
-        Route::patch('/notification-read', 'markAsRead')->name('mark.as.read');
-    });
-    
-    Route::controller(UserController::class)->group(function () {
-        Route::patch('/user/{user}', 'update')->name('update.user');
-        Route::patch('/update-email', 'updateEmail')->name('update.email');
-    });
+	Route::controller(QuoteController::class)->group(function () {
+		Route::get('/quotes/{quote}', 'show')->name('get.quote');
+		Route::get('/all-quotes', 'index')->name('quotes');
+		Route::post('/like/{quote}', 'likePost')->name('add.like');
+		Route::post('/unlike/{quote}', 'unlikePost')->name('remove.like');
+		Route::post('/quotes', 'create')->name('post.quote');
+		Route::patch('/update-quote/{quote}', 'update')->name('update.quote');
+		Route::delete('/quote/{quote}', 'destroy')->name('delete.quote');
+	});
+
+	Route::controller(MovieController::class)->group(function () {
+		Route::get('/user-movies', 'index')->name('user.movies');
+		Route::post('/movies', 'create')->name('post.movie');
+		Route::post('/movie-description', 'show')->name('movie.description');
+		Route::patch('/edit-movie/{movie}', 'update')->name('update.movie');
+		Route::delete('/movie/{movie}', 'destroy')->name('delete.movie');
+	});
+
+	Route::controller(NotificationController::class)->group(function () {
+		Route::get('/notifications', 'index')->name('notifications');
+		Route::post('/notifications-read', 'markAllRead')->name('mark.all.read');
+		Route::patch('/notification-read', 'markAsRead')->name('mark.as.read');
+	});
+
+	Route::controller(UserController::class)->group(function () {
+		Route::patch('/user/{user}', 'update')->name('update.user');
+		Route::patch('/update-email', 'updateEmail')->name('update.email');
+	});
 });
 
 Route::get('/auth-callback', [OAuthController::class, 'callback'])->name('callback');

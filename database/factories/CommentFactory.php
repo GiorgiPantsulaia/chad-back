@@ -11,17 +11,17 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CommentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition()
-    {
-        return [
-            'quote_id' => Quote::factory(),
-            'user_id'=>User::factory(),
-            'body'=>$this->faker->sentence()
-        ];
-    }
+	/**
+	 * Define the model's default state.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function definition()
+	{
+		return [
+			'quote_id' => Quote::factory(),
+			'user_id'  => User::factory(),
+			'body'     => $this->faker->sentence(),
+		];
+	}
 }

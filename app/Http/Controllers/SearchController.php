@@ -9,20 +9,25 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function index(Request $request) :JsonResponse
-    {
-        $search = substr($request->search, 1);
-        if ($request->search[0]=== '@') {
-            $search = substr($request->search, 1);
-            return response()->json(['movies'=>Movie::where(strtolower('title->en'), 'like', '%'. $search . '%')
-            ->orWhere(strtolower('title->ka'), 'like', '%'. $search . '%')
-            ->with(['author', 'genres', 'quotes'=>['comments.author','author','movie']])->get()], 200);
-        } elseif ($request->search[0]==='#') {
-            return response()->json(['quotes'=>Quote::where('body->en', 'like', '%' . $search . '%')
-            ->orWhere('body->ka', 'like', '%' . $search . '%')
-            ->with('movie', 'author', 'comments.author', 'likes')->get()], 200);
-        } else {
-            return response()->json('wrong search keyword', 422);
-        }
-    }
+	public function index(Request $request): JsonResponse
+	{
+		$search = substr($request->search, 1);
+		if ($request->search[0] === '@')
+		{
+			$search = substr($request->search, 1);
+			return response()->json(['movies'=> Movie::where(strtolower('title->en'), 'like', '%' . $search . '%')
+			->orWhere(strtolower('title->ka'), 'like', '%' . $search . '%')
+			->with(['author', 'genres', 'quotes'=>['comments.author', 'author', 'movie']])->get(), ], 200);
+		}
+		elseif ($request->search[0] === '#')
+		{
+			return response()->json(['quotes'=> Quote::where('body->en', 'like', '%' . $search . '%')
+			->orWhere('body->ka', 'like', '%' . $search . '%')
+			->with('movie', 'author', 'comments.author', 'likes')->get(), ], 200);
+		}
+		else
+		{
+			return response()->json('wrong search keyword', 422);
+		}
+	}
 }

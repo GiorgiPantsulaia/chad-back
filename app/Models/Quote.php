@@ -11,28 +11,29 @@ use Spatie\Translatable\HasTranslations;
 
 class Quote extends Model
 {
-    use HasFactory,HasTranslations;
-    
-    protected $guarded = ['id'];
+	use HasFactory,HasTranslations;
 
-    public $translatable = ['body'];
+	protected $guarded = ['id'];
 
-    public function comments() :HasMany
-    {
-        return $this->hasMany(Comment::class);
-    }
-    public function movie() :BelongsTo
-    {
-        return $this->belongsTo(Movie::class, 'movie_id');
-    }
+	public $translatable = ['body'];
 
-    public function author() :BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+	public function comments(): HasMany
+	{
+		return $this->hasMany(Comment::class);
+	}
 
-    public function likes() :BelongsToMany
-    {
-        return $this->belongsToMany(User::class);
-    }
+	public function movie(): BelongsTo
+	{
+		return $this->belongsTo(Movie::class, 'movie_id');
+	}
+
+	public function author(): BelongsTo
+	{
+		return $this->belongsTo(User::class, 'user_id');
+	}
+
+	public function likes(): BelongsToMany
+	{
+		return $this->belongsToMany(User::class);
+	}
 }

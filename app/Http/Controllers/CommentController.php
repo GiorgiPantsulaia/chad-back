@@ -12,18 +12,19 @@ use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
-    public function create(CreateCommentRequest $request, CommentNotificationRequest $notification_request): JsonResponse
-    {
-        Comment::create($request->validated());
+	public function create(CreateCommentRequest $request, CommentNotificationRequest $notification_request): JsonResponse
+	{
+		Comment::create($request->validated());
 
-        $comment = Comment::where(['user_id'=>auth()->user()->id,'body'=>$request->body,'quote_id'=>$request->quote_id])->with('author')->first();
-        
-        event(new PostCommented($comment));
-        
-        if ($request->recipient_id!==auth()->user()->id) {
-            $notification=Notification::create($notification_request->validated());
-            event(new NewNotification($notification->load('sender', 'quote.movie')));
-        }
-        return response()->json(['message'=>'Comment added successfully'], 200);
-    }
+		$comment = Comment::where(['user_id'=>auth()->user()->id, 'body'=>$request->body, 'quote_id'=>$request->quote_id])->with('author')->first();
+
+		event(new PostCommented($comment));
+
+		if ($request->recipient_id !== auth()->user()->id)
+		{
+			$notification = Notification::create($notification_request->validated());
+			event(new NewNotification($notification->load('sender', 'quote.movie')));
+		}
+		return response()->json(['message'=>'Comment added successfully'], 200);
+	}
 }
