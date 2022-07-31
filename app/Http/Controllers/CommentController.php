@@ -4,27 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Events\NewNotification;
 use App\Events\PostCommented;
-use app\Http\Requests\NotificationRequests\CommentNotificationRequest;
 use App\Http\Requests\CreateCommentRequest;
+use App\Http\Requests\NotificationRequests\CommentNotificationRequest;
 use App\Models\Comment;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
 	public function create(CreateCommentRequest $request, CommentNotificationRequest $notification_request): JsonResponse
 	{
-		Comment::create($request->validated());
+		DB::transaction(
+			function () use ($request, $notification_request) {
+				$comment = Comment::create($request->validated());
 
-		$comment = Comment::where(['user_id'=>auth()->user()->id, 'body'=>$request->body, 'quote_id'=>$request->quote_id])->with('author')->first();
+				event(new PostCommented($comment->load('author')));
 
-		event(new PostCommented($comment));
-
-		if ($request->recipient_id !== auth()->user()->id)
-		{
-			$notification = Notification::create($notification_request->validated());
-			event(new NewNotification($notification->load('sender', 'quote.movie')));
-		}
+				if ($request->recipient_id !== auth()->user()->id)
+				{
+					$notification = Notification::create($notification_request->validated());
+					event(new NewNotification($notification->load('sender', 'quote.movie')));
+				}
+			}
+		);
 		return response()->json(['message'=>'Comment added successfully'], 200);
 	}
 }

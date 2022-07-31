@@ -284,7 +284,58 @@ paths:
               properties:
                 password:
                   type: string
-                  example: "yvitelidatvi123"
+                  example: "pass1234"
                 code:
                   type: string
                   example: "ce4eba3dcc2cb3ede7ba3be4b6096de1b35990de"
+  /comments:
+    post:
+      summary: Creates comment for a quote
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+                properties:
+                  message:
+                    example: "Comment added successfully"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quote_id:
+                  type: number
+                  example: 4
+                body:
+                  type: string
+                  example: "nice quote..."
+                recipient_id:
+                  type: number
+                  example: 5
+  /all-quotes:
+    get:
+      summary: Returns array of quotes
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A JSON array of paginated quotes
+          content:
+            application/json:
+              schema:
+                type: array
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
