@@ -21,19 +21,22 @@ class QuoteController extends Controller
 
 	public function likePost(Quote $quote, CreateLikeNotificationRequest $request): JsonResponse
 	{
-		$quote->likes()->attach(auth()->user());
-		event(new PostLiked($quote->load('likes')));
+		DB::transaction(
+			function () use ($quote, $request) {
+				$quote->likes()->attach(auth()->user());
+				event(new PostLiked($quote->load('likes')));
 
-		if ($quote->author->id !== auth()->user()->id)
-		{
-			$attributes = $request->validated();
-			$attributes['recipient_id'] = $quote->author->id;
-			$attributes['quote_id'] = $quote->id;
-			$notification = Notification::create($attributes);
+				if ($quote->author->id !== auth()->user()->id)
+				{
+					$attributes = $request->validated();
+					$attributes['recipient_id'] = $quote->author->id;
+					$attributes['quote_id'] = $quote->id;
+					$notification = Notification::create($attributes);
 
-			event(new NewNotification($notification->load('sender', 'quote.movie')));
-		}
-
+					event(new NewNotification($notification->load('sender', 'quote.movie')));
+				}
+			}
+		);
 		return response()->json(['success'=>true], 200);
 	}
 
@@ -44,11 +47,12 @@ class QuoteController extends Controller
 				$quote->likes()->detach(auth()->user());
 				event(new PostLiked($quote->load('likes')));
 
-				$notification = Notification::firstWhere(['user_id'=> auth()->user()->id,
-					'type'                                            => 'like',
-					'state'                                           => 'unread',
-					'recipient_id'                                    => $quote->author->id,
-					'quote_id'                                        => $quote->id,
+				$notification = Notification::firstWhere([
+					'user_id'     => auth()->user()->id,
+					'type'        => 'like',
+					'state'       => 'unread',
+					'recipient_id'=> $quote->author->id,
+					'quote_id'    => $quote->id,
 				]);
 
 				if ($notification)
@@ -88,13 +92,6 @@ class QuoteController extends Controller
 
 	public function show(Quote $quote): JsonResponse
 	{
-		if ($quote)
-		{
-			return response()->json($quote->load(['author', 'movie', 'comments.author', 'likes']), 200);
-		}
-		else
-		{
-			return response()->json('error', 404);
-		}
+		return response()->json($quote->load(['author', 'movie', 'comments.author', 'likes']), 200);
 	}
 }

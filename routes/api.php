@@ -65,5 +65,5 @@ Route::middleware(['auth:api'])->group(function () {
 	});
 });
 
-Route::get('/auth-callback', [OAuthController::class, 'callback'])->name('callback');
 Route::post('/auth-redirect', [OAuthController::class, 'redirect'])->name('redirect');
+Route::get('/auth-callback', [OAuthController::class, 'callback'])->name('callback');

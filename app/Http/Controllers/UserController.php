@@ -24,7 +24,6 @@ class UserController extends Controller
 	public function update(UpdateUserRequest $request, User $user): JsonResponse
 	{
 		$confirmation_sent = false;
-
 		if ($request->img)
 		{
 			$file = $request->file('img');
@@ -36,9 +35,9 @@ class UserController extends Controller
 
 		if ($request->name)
 		{
-			$user->update(['name'=>$request->name]);
+			$user->update(['name'=>$request->validated('name')]);
 		}
-		if ($request->email)
+		if ($request->validated('email'))
 		{
 			if (User::where('email', $request->email)->first())
 			{

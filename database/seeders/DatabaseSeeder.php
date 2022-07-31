@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-		if (App::environment('locale'))
+		if (App::environment('local'))
 		{
 			Comment::factory(10)->create();
 		}
