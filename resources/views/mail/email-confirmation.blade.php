@@ -73,7 +73,7 @@
                 word-wrap: break-word;
             "
         >
-            http://localhost:3000/reset-password?token={{
+           {{ env('FRONT_REDIRECT') }}/reset-password?token={{
             $email_data['verification_code'] }}
         </p>
         <br />

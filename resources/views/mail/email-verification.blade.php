@@ -78,7 +78,7 @@
                 word-wrap: break-word;
             "
         >
-            http://localhost:3000/verify?token={{
+        {{ env('FRONT_REDIRECT') }}/verify?token={{
             $email_data['verification_code'] }}
         </p>
         <br />

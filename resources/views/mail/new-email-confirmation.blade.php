@@ -73,7 +73,7 @@
                 word-wrap: break-word;
             "
         >
-            http://localhost:3000/profile?token={{
+        {{ env('FRONT_REDIRECT') }}/profile?token={{
             $email_data['verification_code'] }}&email={{ $email_data['email'] }}
         </p>
         <br />
