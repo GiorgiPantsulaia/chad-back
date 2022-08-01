@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
 		{
 			Comment::factory(10)->create();
 		}
+		$this->call(GenreSeeder::class);
 	}
 }

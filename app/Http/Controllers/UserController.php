@@ -35,13 +35,13 @@ class UserController extends Controller
 
 		if ($request->name)
 		{
-			$user->update(['name'=>$request->validated('name')]);
+			$user->update(['name'=>$request->name]);
 		}
-		if ($request->validated('email'))
+		if ($request->email)
 		{
-			if (User::where('email', $request->email)->first())
+			if (User::firstWhere('email', $request->email))
 			{
-				return response()->json('User with this email already exists', 409);
+				return response()->json(['error'=> 'User with this email already exists'], 409);
 			}
 			else
 			{
@@ -55,13 +55,15 @@ class UserController extends Controller
 		{
 			$user->update(['password'=>$request->password]);
 		}
-		return response()->json(['message'=> 'Profile updated successfully',
-			'user'                           => $user, 'confirmation_sent'=>$confirmation_sent, ], 200);
+		return response()->json([
+			'message'          => 'Profile updated successfully',
+			'user'             => $user,
+			'confirmation_sent'=> $confirmation_sent, ], 200);
 	}
 
 	public function updateEmail(Request $request): JsonResponse
 	{
 		User::where('verification_code', $request->verification_code)->update(['email'=>$request->email]);
-		return response()->json('Email updated successfully', 200);
+		return response()->json(['message'=> 'Email updated successfully'], 200);
 	}
 }

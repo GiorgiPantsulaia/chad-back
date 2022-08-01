@@ -36,7 +36,7 @@ class AuthController extends Controller
 		$user = User::create($request->validated());
 		$user->verification_code = sha1(time());
 		$user->save();
-		if ($user != null)
+		if ($user !== null)
 		{
 			$this->sendVerification($user->name, $user->email, $user->verification_code);
 			return response()->json(['message'=>'Verification Email Sent!'], 201);
@@ -45,7 +45,10 @@ class AuthController extends Controller
 
 	public function login(LoginRequest $request): JsonResponse
 	{
-		$credentials = $request->validated();
+		$login = $request->name;
+		$nameOrEmail = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+		$request->merge([$nameOrEmail => $login]);
+		$credentials = $request->only([$nameOrEmail, 'password']);
 		$user = User::where('email', $request->name)->orWhere('name', $request->name)->first();
 		if ($user && $user->email_verified_at === null)
 		{
@@ -86,8 +89,7 @@ class AuthController extends Controller
 
 	public function verifyEmail(Request $request): JsonResponse
 	{
-		$verification_code = $request->token;
-		$user = User::firstWhere('verification_code', $verification_code);
+		$user = User::firstWhere('verification_code', $request->token);
 
 		if ($user !== null)
 		{
@@ -117,7 +119,7 @@ class AuthController extends Controller
 
 	public function resetPassword(PasswordResetRequest $request): JsonResponse
 	{
-		$user = User::where('verification_code', $request->code)->first();
+		$user = User::firstWhere('verification_code', $request->code);
 		if ($user)
 		{
 			$user->update($request->validated());

@@ -19,8 +19,7 @@ class MovieController extends Controller
 
 	public function index(): JsonResponse
 	{
-		$user = auth()->user();
-		$movies = Movie::latest()->where('user_id', $user->id)->with('quotes')->get();
+		$movies = Movie::latest()->where('user_id', auth()->user()->id)->with('quotes')->get();
 		return response()->json($movies, 200);
 	}
 
@@ -46,15 +45,9 @@ class MovieController extends Controller
 
 	public function show(Request $request): JsonResponse
 	{
-		$movie = Movie::where('slug', $request->slug)->with(['author', 'genres', 'quotes'=>['comments.author', 'author', 'movie', 'likes']])->first();
-		if ($movie)
-		{
-			return response()->json($movie, 200);
-		}
-		else
-		{
-			return response()->json('error', 404);
-		}
+		$movie = Movie::with(['author', 'genres', 'quotes'=>['comments.author', 'author', 'movie', 'likes']])->firstWhere('slug', $request->slug);
+
+		return response()->json($movie, 200);
 	}
 
 	public function destroy(Movie $movie): JsonResponse
@@ -86,6 +79,6 @@ class MovieController extends Controller
 			}
 		);
 
-		return response()->json('Movie updated successfully', 200);
+		return response()->json(['message'=>'Movie updated successfully'], 200);
 	}
 }

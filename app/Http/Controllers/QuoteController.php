@@ -47,18 +47,12 @@ class QuoteController extends Controller
 				$quote->likes()->detach(auth()->user());
 				event(new PostLiked($quote->load('likes')));
 
-				$notification = Notification::firstWhere([
+				Notification::firstWhere([
 					'user_id'     => auth()->user()->id,
 					'type'        => 'like',
-					'state'       => 'unread',
 					'recipient_id'=> $quote->author->id,
 					'quote_id'    => $quote->id,
-				]);
-
-				if ($notification)
-				{
-					$notification->delete();
-				}
+				])?->delete();
 			}
 		);
 

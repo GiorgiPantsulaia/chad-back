@@ -29,12 +29,4 @@ class LoginRequest extends FormRequest
 			'password'=> 'required',
 		];
 	}
-
-	protected function prepareForValidation(): void
-	{
-		$login = $this->name;
-		$nameOrEmail = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-		$this->merge([$nameOrEmail => $login,
-		]);
-	}
 }

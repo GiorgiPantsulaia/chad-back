@@ -74,7 +74,7 @@
             "
         >
             http://localhost:3000/profile?token={{
-            $email_data['verification_code'] }}
+            $email_data['verification_code'] }}&email={{ $email_data['email'] }}
         </p>
         <br />
         <h4 style="font-weight: 100; font-family: Arial, Helvetica, sans-serif">

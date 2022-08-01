@@ -90,14 +90,14 @@ paths:
                     type: string
                   password:
                     type: string
-                example: # Sample data
-                  access_token: "luI1Ymbfu0lo8srrXebTL7f638coXKxztjEvFml2"
-                  token_type: "bearer"
-                  expires_in: 3600
-                  username: "johndoe123"
-                  user_email: "john@gmail.com"
-                  user_id: 6
-                  user_pfp: "storage/profile-pictures/1659195277.my-picture.png"
+                # example: # Sample data
+                #   access_token: "luI1Ymbfu0lo8srrXebTL7f638coXKxztjEvFml2"
+                #   token_type: "bearer"
+                #   expires_in: 3600
+                #   username: "johndoe123"
+                #   user_email: "john@gmail.com"
+                #   user_id: 6
+                #   user_pfp: "storage/profile-pictures/1659195277.my-picture.png"
 
         "401":
           description: User does not exist message

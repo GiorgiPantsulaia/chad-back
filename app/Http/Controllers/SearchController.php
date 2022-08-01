@@ -27,7 +27,7 @@ class SearchController extends Controller
 		}
 		else
 		{
-			return response()->json('wrong search keyword', 422);
+			return response()->json(['error'=> 'wrong search keyword'], 422);
 		}
 	}
 }
