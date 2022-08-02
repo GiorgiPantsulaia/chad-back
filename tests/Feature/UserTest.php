@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\Authenticate;
 use App\Models\Notification;
 use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -110,12 +112,37 @@ class UserTest extends TestCase
 
 	public function test_user_can_update_their_information()
 	{
-		$this->withoutMiddleware();
+		$this->withoutMiddleware([Authenticate::class]);
 		User::factory()->count(1)->create(['name'=>'test123', 'email'=>'test@gmail.com']);
 		$user = User::first();
 		$this->actingAs($user)->patch(route('update.user', $user->id), [
+			'name'                 => 'test456',
 			'password'             => 'password1234',
 			'password_confirmation'=> 'password1234',
+			'img'                  => UploadedFile::fake()->create('test.png', $kilobytes = 0),
+			'email'                => 'test1@gmail.com',
 		])->assertOk();
+	}
+
+	public function test_user_can_update_email()
+	{
+		$this->withoutMiddleware([Authenticate::class]);
+		User::factory()->count(1)->create(['name'=>'test123', 'email'=>'test@gmail.com']);
+		$user = User::first();
+		$this->actingAs($user)->patch(route('update.email'), [
+			'verification_code'=> $user->verification_code,
+			'email'            => 'test1@gmail.com',
+		])->assertOk()->assertExactJson(['message'=> 'Email updated successfully']);
+	}
+
+	public function test_user_cannot_update_email_to_already_existing_one()
+	{
+		$this->withoutMiddleware([Authenticate::class]);
+		User::factory()->count(1)->create(['name'=>'test123', 'email'=>'test@gmail.com']);
+		User::factory()->count(1)->create(['name'=>'test1234', 'email'=>'test1@gmail.com']);
+		$user = User::first();
+		$this->actingAs($user)->patch(route('update.user', $user->id), [
+			'email'=> 'test1@gmail.com',
+		])->assertStatus(409);
 	}
 }

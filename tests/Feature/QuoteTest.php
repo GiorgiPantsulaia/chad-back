@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\Authenticate;
 use App\Models\Movie;
 use App\Models\Quote;
 use App\Models\User;
@@ -27,15 +28,27 @@ class QuoteTest extends TestCase
 		$this->actingAs($user)->get(route('quotes'))->assertOk();
 	}
 
-	// public function test_user_can_like_quote()
-	// {
-	// 	$this->withoutMiddleware();
-	// 	Quote::factory()->count(1)->create();
-	// 	User::factory()->count(1)->create();
-	// 	$user = User::first();
-	// 	$quote = Quote::first();
-	// 	$this->actingAs($user)->post(route('add.like', $quote->id))->assertOk();
-	// }
+	public function test_user_can_like_quote()
+	{
+		$this->withoutMiddleware([Authenticate::class]);
+		User::factory()->count(1)->create();
+		Quote::factory()->count(1)->create();
+		$user = User::first();
+		$quote = Quote::first();
+		$this->actingAs($user)->post(route('add.like', $quote->id))->assertOk();
+	}
+
+	public function test_user_can_unlike_quote()
+	{
+		$this->withoutMiddleware([Authenticate::class]);
+		User::factory()->count(1)->create();
+		Quote::factory()->count(1)->create();
+		$user = User::first();
+		$quote = Quote::first();
+		$this->actingAs($user)->post(route('add.like', $quote->id));
+		$this->actingAs($user)->post(route('remove.like', $quote->id))->assertOk();
+	}
+
 	public function test_user_can_add_quote()
 	{
 		$this->withoutMiddleware();

@@ -25,6 +25,7 @@ class AuthTest extends TestCase
 	// {
 	// 	$this->get(route('callback'))->assertRedirect();
 	// }
+
 	public function test_user_can_register()
 	{
 		$this->post(route('signup'), [
