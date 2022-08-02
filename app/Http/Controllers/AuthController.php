@@ -34,11 +34,9 @@ class AuthController extends Controller
 	public function create(RegisterRequest $request): JsonResponse
 	{
 		$user = User::create($request->validated() + ['verification_code'=>sha1(time())]);
-		if ($user !== null)
-		{
-			$this->sendVerification($user->name, $user->email, $user->verification_code);
-			return response()->json(['message'=>'Verification Email Sent!'], 201);
-		}
+
+		$this->sendVerification($user->name, $user->email, $user->verification_code);
+		return response()->json(['message'=>'Verification Email Sent!'], 201);
 	}
 
 	public function login(LoginRequest $request): JsonResponse
@@ -88,44 +86,23 @@ class AuthController extends Controller
 	public function verifyEmail(Request $request): JsonResponse
 	{
 		$user = User::firstWhere('verification_code', $request->token);
-
-		if ($user !== null)
-		{
-			$user->markEmailAsVerified();
-			return response()->json(['message'=>'Email Activated Successfully'], 200);
-		}
-		else
-		{
-			return response()->json(['error'=>'invalid token'], 400);
-		}
+		$user->markEmailAsVerified();
+		return response()->json(['message'=>'Email Activated Successfully'], 200);
 	}
 
 	public function confirmEmail(Request $request): JsonResponse
 	{
 		$user = User::firstWhere(['email'=>$request->email, 'google_user'=>false]);
 
-		if ($user)
-		{
-			$this->sendConfirmation($user->name, $user->email, $user->verification_code);
-			return response()->json(['message'=>'Email confirmation sent.'], 200);
-		}
-		else
-		{
-			return response()->json(['error'=>'User not found'], 404);
-		}
+		$this->sendConfirmation($user->name, $user->email, $user->verification_code);
+		return response()->json(['message'=>'Email confirmation sent.'], 200);
 	}
 
 	public function resetPassword(PasswordResetRequest $request): JsonResponse
 	{
 		$user = User::firstWhere('verification_code', $request->code);
-		if ($user)
-		{
-			$user->update($request->validated());
-			return response()->json(['message'=>'Password updated successfully.'], 200);
-		}
-		else
-		{
-			return response()->json(['error'=>'User not found'], 404);
-		}
+
+		$user->update($request->validated());
+		return response()->json(['message'=>'Password updated successfully.'], 200);
 	}
 }
