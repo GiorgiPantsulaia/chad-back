@@ -1,5 +1,5 @@
 <div style="display:flex; align-items: center; justify-content:center">
-  <h1 >Chad MovieQuotes</h1>
+  <h1 >Chad MovieQuotes API</h1>
 </div>
 
 ---
