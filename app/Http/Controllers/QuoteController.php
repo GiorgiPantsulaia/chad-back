@@ -28,10 +28,11 @@ class QuoteController extends Controller
 
 				if ($quote->author->id !== auth()->user()->id)
 				{
-					$attributes = $request->validated();
-					$attributes['recipient_id'] = $quote->author->id;
-					$attributes['quote_id'] = $quote->id;
-					$notification = Notification::create($attributes);
+					$notification = Notification::create($request->validated()
+					+ [
+						'recipient_id'=> $quote->author->id,
+						'quote_id'    => $quote->id,
+					]);
 
 					event(new NewNotification($notification->load('sender', 'quote.movie')));
 				}
@@ -61,13 +62,11 @@ class QuoteController extends Controller
 
 	public function create(CreateQuoteRequest $request): JsonResponse
 	{
-		$attributes = $request->validated();
 		$file = $request->file('img');
 		$file_name = time() . '.' . $file->getClientOriginalName();
 		$file->move(public_path('storage/quote-thumbnails'), $file_name);
-		$attributes['thumbnail'] = 'storage/quote-thumbnails/' . $file_name;
 
-		Quote::create($attributes);
+		Quote::create($request->validated() + ['thumbnail'=>'storage/quote-thumbnails/' . $file_name]);
 		return response()->json(['message'=>'Quote added successfully.'], 201);
 	}
 

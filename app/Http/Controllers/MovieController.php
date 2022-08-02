@@ -30,10 +30,11 @@ class MovieController extends Controller
 				$file = $request->file('img');
 				$file_name = time() . '.' . $file->getClientOriginalName();
 				$file->move(public_path('storage/movie-thumbnails'), $file_name);
-				$attributes = $request->validated();
-				$attributes['slug'] = $this->slugify($request->english_title);
-				$attributes['thumbnail'] = 'storage/movie-thumbnails/' . $file_name;
-				$movie = Movie::create($attributes);
+				$movie = Movie::create($request->validated()
+			+ [
+				'slug'      => $this->slugify($request->english_title),
+				'thumbnail' => 'storage/movie-thumbnails/' . $file_name,
+			]);
 
 				$genres = Genre::whereIn('title->' . $request->lang, explode(',', $request->chosen_genres))->get();
 				$movie->genres()->attach($genres);

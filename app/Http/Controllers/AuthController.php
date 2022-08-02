@@ -33,9 +33,7 @@ class AuthController extends Controller
 
 	public function create(RegisterRequest $request): JsonResponse
 	{
-		$user = User::create($request->validated());
-		$user->verification_code = sha1(time());
-		$user->save();
+		$user = User::create($request->validated() + ['verification_code'=>sha1(time())]);
 		if ($user !== null)
 		{
 			$this->sendVerification($user->name, $user->email, $user->verification_code);
