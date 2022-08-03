@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
@@ -15,9 +14,9 @@ class NotificationController extends Controller
 		return response()->json(NotificationResource::collection($notifications), 200);
 	}
 
-	public function markAsRead(Request $request): JsonResponse
+	public function markAsRead(Notification $notification): JsonResponse
 	{
-		Notification::where('id', $request->id)->update(['state'=>'read']);
+		$notification->update(['state'=>'read']);
 		return response()->json(['message'=>'Notification marked as read'], 200);
 	}
 

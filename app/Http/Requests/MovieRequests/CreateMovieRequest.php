@@ -25,11 +25,12 @@ class CreateMovieRequest extends FormRequest
 	{
 		return [
 			'title'       => 'required',
-			'user_id'     => 'required',
 			'description' => 'required',
 			'director'    => 'required',
 			'release_date'=> 'required',
 			'income'      => 'required',
+			'user_id'     => 'nullable',
+			'img'         => 'required',
 		];
 	}
 

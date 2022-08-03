@@ -557,80 +557,410 @@ paths:
               schema:
                 type: array
                 items:
+                  $ref: "#/components/schemas/Movie"
+  /movies:
+    post:
+      tags:
+        - "Movies"
+      summary: Creates a movie
+      security:
+        - BearerAuth: []
+      responses:
+        "201":
+          description: Success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Movie added successfully
+        "422":
+          description: Bad request error message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: The img field is required.
+                  errors:
+                    type: object
+                    properties:
+                      img:
+                        type: string
+                        example: "The img field is required."
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                english_title:
+                  type: string
+                  example: "Forrest Gump"
+                georgian_title:
+                  type: string
+                  example: "ფორესტ გამპი"
+                english_description:
+                  type: string
+                  example: "english description"
+                georgian_description:
+                  type: string
+                  example: "ქართული აღწერა"
+                director_eng:
+                  type: string
+                  example: "director name"
+                director_geo:
+                  type: string
+                  example: "რეჟისორი"
+                release_date:
+                  type: number
+                  example: 1994
+                income:
+                  type: number
+                  example: 680000000
+                img:
+                  type: string
+                  format: binary
+  /movie-description:
+    post:
+      tags:
+        - "Movies"
+      summary: Creates a movie
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A JSON object of a single movie
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Movie"
+        "500":
+          description: Movie does not exist error
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                slug:
+                  type: string
+                  example: "forrest-gump"
+  /edit-movie/{movie}:
+    patch:
+      tags:
+        - "Movies"
+      parameters:
+        - name: movie
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Edits the movie
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Movie updated successfully"
+        "404":
+          $ref: "#/components/responses/MovieNotFoundResponse"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                english_title:
+                  type: string
+                  example: "Forrest Gump"
+                georgian_title:
+                  type: string
+                  example: "ფორესტ გამპი"
+                english_description:
+                  type: string
+                  example: "english description"
+                georgian_description:
+                  type: string
+                  example: "ქართული აღწერა"
+                director_eng:
+                  type: string
+                  example: "director name"
+                director_geo:
+                  type: string
+                  example: "რეჟისორი"
+                release_date:
+                  type: number
+                  example: 1994
+                income:
+                  type: number
+                  example: 680000000
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - img
+              properties:
+                img:
+                  type: string
+                  format: binary
+  /movie/{movie}:
+    delete:
+      tags:
+        - "Movies"
+      parameters:
+        - name: movie
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Deletes the movie
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Movie Deleted successfully"
+        "404":
+          $ref: "#/components/responses/MovieNotFoundResponse"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /notifications:
+    get:
+      tags:
+        - "Notifications"
+      summary: Get all notifications of current user
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A JSON array of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
                   type: object
                   properties:
                     id:
                       type: number
-                      example: 18
-                    title:
-                      type: object
-                      properties:
-                        en:
-                          type: string
-                          example: "Forrest Gump"
-                        ka:
-                          type: string
-                          example: "ფორესტ გამპი"
-                    description:
-                      type: object
-                      properties:
-                        en:
-                          type: string
-                          example: "Movie description"
-                        ka:
-                          type: string
-                          example: "ფილმის აღწერა"
-                    director:
-                      type: object
-                      properties:
-                        en:
-                          type: string
-                          example: "Robert Zemeckis"
-                        ka:
-                          type: string
-                          example: "რობერტ ზემეკისი"
-                    slug:
-                      type: string
-                      example: "forrest-gump"
-                    thumbnail:
-                      type: string
-                      example: "storage/movie-thumbnails/1659519781.2.png"
-                    income:
-                      type: number
-                      example: 680000000
-                    release_date:
-                      type: number
-                      example: 1994
+                      example: 1
                     user_id:
                       type: number
-                      example: 44
-                    author:
+                      example: 2
+                    recipient_id:
+                      type: number
+                      example: 1
+                    quote_id:
+                      type: number
+                      example: 4
+                    type:
+                      type: string
+                      example: "like"
+                    state:
+                      type: string
+                      example: "unread"
+                    created_at:
+                      type: string
+                      example: "2022-08-03 11:18:46"
+                    sender:
                       $ref: "#/components/schemas/Author"
-                    quotes:
-                      type: object
-                      properties:
-                        id:
-                          type: number
-                          example: 14
-                        user_id:
-                          type: number
-                          example: 44
-                        movie_id:
-                          type: number
-                          example: 18
-                        body:
-                          type: object
-                          properties:
-                            en:
-                              type: string
-                              example: "quote"
-                            ka:
-                              type: string
-                              example: "ციტატა"
-                        thumbnail:
-                          type: string
-                          example: "storage/quote-thumbnails/1659519790.2.png"
-
+  /notifications-read:
+    post:
+      tags:
+        - "Notifications"
+      summary: Marks all notifications as read
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Notifications marked as read"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /notification-read/{notification}:
+    patch:
+      tags:
+        - "Notifications"
+      parameters:
+        - name: notification
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Marks one notification as read
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Notification marked as read"
+        "404":
+          description: Not found error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No query results for model [App\\Models\\Notification] 44"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /user/{user}:
+    patch:
+      tags:
+        - "User"
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Edits the user info
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A JSON array response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Profile updated successfully"
+                  user:
+                    $ref: "#/components/schemas/Author"
+                  confirmation_sent:
+                    type: boolean
+                    example: false
+        "409":
+          description: User exists message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User with this email already exists"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "coolname123"
+                email:
+                  type: string
+                  example: "test@gmail.com"
+                password:
+                  type: string
+                  example: "pass1234"
+                password_confirmation:
+                  type: string
+                  example: "pass1234"
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - img
+              properties:
+                img:
+                  type: string
+                  format: binary
+  /update-email:
+    patch:
+      tags:
+        - "User"
+      summary: Updates user email
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Email updated successfully"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                verification_code:
+                  type: string
+                  example: "VIuXCXOkHmUZToR15ygJ"
+                email:
+                  type: string
+                  example: "test@gmail.com"
 components:
   securitySchemes:
     BearerAuth:
@@ -708,6 +1038,80 @@ components:
           items:
             type: object
             $ref: "#/components/schemas/Author"
+    Movie:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 18
+        title:
+          type: object
+          properties:
+            en:
+              type: string
+              example: "Forrest Gump"
+            ka:
+              type: string
+              example: "ფორესტ გამპი"
+        description:
+          type: object
+          properties:
+            en:
+              type: string
+              example: "Movie description"
+            ka:
+              type: string
+              example: "ფილმის აღწერა"
+        director:
+          type: object
+          properties:
+            en:
+              type: string
+              example: "Robert Zemeckis"
+            ka:
+              type: string
+              example: "რობერტ ზემეკისი"
+        slug:
+          type: string
+          example: "forrest-gump"
+        thumbnail:
+          type: string
+          example: "storage/movie-thumbnails/1659519781.2.png"
+        income:
+          type: number
+          example: 680000000
+        release_date:
+          type: number
+          example: 1994
+        user_id:
+          type: number
+          example: 44
+        author:
+          $ref: "#/components/schemas/Author"
+        quotes:
+          type: object
+          properties:
+            id:
+              type: number
+              example: 14
+            user_id:
+              type: number
+              example: 44
+            movie_id:
+              type: number
+              example: 18
+            body:
+              type: object
+              properties:
+                en:
+                  type: string
+                  example: "quote"
+                ka:
+                  type: string
+                  example: "ციტატა"
+            thumbnail:
+              type: string
+              example: "storage/quote-thumbnails/1659519790.2.png"
   responses:
     LikeQuoteResponse:
       description: A success message
@@ -729,6 +1133,16 @@ components:
               message:
                 type: string
                 example: "No query results for model [App\\Models\\Quote] 22"
+    MovieNotFoundResponse:
+      description: Not found error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "No query results for model [App\\Models\\Movie] 44"
     UnauthenticatedError:
       description: Unauthenticated
       content:

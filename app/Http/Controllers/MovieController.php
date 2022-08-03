@@ -31,6 +31,7 @@ class MovieController extends Controller
 				$file = $request->file('img');
 				$file_name = time() . '.' . $file->getClientOriginalName();
 				$file->move(public_path('storage/movie-thumbnails'), $file_name);
+
 				$movie = Movie::create($request->validated()
 			+ [
 				'slug'      => $this->slugify($request->english_title),
@@ -49,7 +50,7 @@ class MovieController extends Controller
 	{
 		$movie = Movie::firstWhere('slug', $request->slug);
 
-		return response()->json(new MovieResource($movie->load('quotes', 'genres')), 200);
+		return response()->json(new MovieResource($movie->load(['quotes'=>['comments', 'likes', 'author'], 'genres'])), 200);
 	}
 
 	public function destroy(Movie $movie): JsonResponse
@@ -76,11 +77,14 @@ class MovieController extends Controller
 					$movie->genres()->attach($genres);
 				}
 				$attributes = $request->validated();
-				$attributes['slug'] = $this->slugify($request->english_title);
+				if ($request->english_title)
+				{
+					$attributes['slug'] = $this->slugify($request->english_title);
+				}
 				$movie->update($attributes);
+				return $attributes;
 			}
 		);
-
 		return response()->json(['message'=>'Movie updated successfully'], 200);
 	}
 }
