@@ -17,7 +17,7 @@ class QuoteController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		return response()->json(QuoteResource::collection(Quote::latest()->paginate(5))->response()->getData(true), 200);
+		return response()->json(QuoteResource::collection(Quote::with('author', 'comments', 'likes', 'movie')->latest()->paginate(5))->response()->getData(true), 200);
 	}
 
 	public function likePost(CreateLikeNotificationRequest $request, Quote $quote): JsonResponse
@@ -63,9 +63,16 @@ class QuoteController extends Controller
 
 	public function create(CreateQuoteRequest $request): JsonResponse
 	{
-		$file = $request->file('img');
-		$file_name = time() . '.' . $file->getClientOriginalName();
-		$file->move(public_path('storage/quote-thumbnails'), $file_name);
+		if ($request->img)
+		{
+			$file = $request->file('img');
+			$file_name = time() . '.' . $file->getClientOriginalName();
+			$file->move(public_path('storage/quote-thumbnails'), $file_name);
+		}
+		else
+		{
+			return response()->json(['error'=>'image is required'], 422);
+		}
 
 		Quote::create($request->validated() + ['thumbnail'=>'storage/quote-thumbnails/' . $file_name]);
 		return response()->json(['message'=>'Quote added successfully.'], 201);
@@ -86,6 +93,6 @@ class QuoteController extends Controller
 
 	public function show(Quote $quote): JsonResponse
 	{
-		return response()->json(new QuoteResource($quote), 200);
+		return response()->json(new QuoteResource($quote->load('author', 'comments', 'likes', 'movie')), 200);
 	}
 }

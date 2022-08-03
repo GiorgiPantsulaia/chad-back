@@ -26,7 +26,6 @@ class UpdateQuoteRequest extends FormRequest
 		return [
 			'body'     => 'sometimes',
 			'user_id'  => 'required',
-			'movie_id' => 'required',
 			'thumbnail'=> 'sometimes',
 		];
 	}

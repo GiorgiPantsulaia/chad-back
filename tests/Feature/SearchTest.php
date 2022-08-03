@@ -15,7 +15,7 @@ class SearchTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->withoutMiddleware([Authenticate::class]);
+		$this->withoutMiddleware();
 	}
 
 	/**

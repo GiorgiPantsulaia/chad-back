@@ -13,6 +13,8 @@ servers:
 paths:
   /register:
     post:
+      tags:
+        - "Authentication"
       summary: Creates a user.
       responses:
         "201":
@@ -79,6 +81,8 @@ paths:
                   example: "pass1234"
   /login:
     post:
+      tags:
+        - "Authentication"
       summary: Authenticates a user.
       responses:
         "200":
@@ -138,6 +142,8 @@ paths:
                   example: "password123"
   /logout:
     post:
+      tags:
+        - "Authentication"
       summary: Logs user out.
       responses:
         "200":
@@ -154,6 +160,8 @@ paths:
                     example: "Logged out successfully."
   /confirm-email:
     post:
+      tags:
+        - "Authentication"
       summary: Sends confirmation email.
       responses:
         "200":
@@ -192,6 +200,8 @@ paths:
                   example: "johndoe@gmail.com"
   /verify-email:
     post:
+      tags:
+        - "Authentication"
       summary: Verifies user email with token
       responses:
         "200":
@@ -230,6 +240,8 @@ paths:
                   example: "ce4eba3dcc2cb3ede7ba3be4b6096de1b35990de"
   /reset-password:
     patch:
+      tags:
+        - "Authentication"
       summary: Resets user password
       responses:
         "200":
@@ -267,18 +279,13 @@ paths:
                             "The password must be at least 8 characters.",
                             "The password format is invalid.",
                           ]
-        "404":
+        "500":
           description: User not found
           content:
             application/json:
               schema:
                 type: object
-                items:
-                  type: string
-                properties:
-                  error:
-                    type: string
-                    example: "User not found"
+
       requestBody:
         required: true
         content:
@@ -294,6 +301,8 @@ paths:
                   example: "ce4eba3dcc2cb3ede7ba3be4b6096de1b35990de"
   /comments:
     post:
+      tags:
+        - "Quotes"
       summary: Creates comment for a quote
       security:
         - BearerAuth: []
@@ -309,6 +318,8 @@ paths:
                 properties:
                   message:
                     example: "Comment added successfully"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
       requestBody:
         required: true
         content:
@@ -327,6 +338,8 @@ paths:
                   example: 5
   /all-quotes:
     get:
+      tags:
+        - "Quotes"
       summary: Returns array of quotes
       security:
         - BearerAuth: []
@@ -338,59 +351,285 @@ paths:
               schema:
                 type: array
                 items:
+                  $ref: "#/components/schemas/Quote"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /quotes/{id}:
+    get:
+      tags:
+        - "Quotes"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Returns a single quote
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A JSON of single quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quote"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /like/{quote}:
+    post:
+      tags:
+        - "Quotes"
+      parameters:
+        - name: quote
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Attaches a like to a quote
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/LikeQuoteResponse"
+        "404":
+          $ref: "#/components/responses/QuoteNotFoundResponse"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /unlike/{quote}:
+    post:
+      tags:
+        - "Quotes"
+      parameters:
+        - name: quote
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Detaches a like from a quote
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/LikeQuoteResponse"
+        "404":
+          $ref: "#/components/responses/QuoteNotFoundResponse"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /quotes:
+    post:
+      tags:
+        - "Quotes"
+      summary: Creates a quote
+      security:
+        - BearerAuth: []
+      responses:
+        "201":
+          description: Success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Quote added successfully
+        "422":
+          description: Bad request error message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: image is required
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                english_quote:
+                  type: string
+                  example: "some cool quote"
+                georgian_quote:
+                  type: string
+                  example: "ციტატა"
+                movie_id:
+                  type: number
+                  example: 4
+                img:
+                  type: string
+                  format: binary
+  /update-quote/{quote}:
+    patch:
+      tags:
+        - "Quotes"
+      parameters:
+        - name: quote
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Updates a quote
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Quote updated successfully
+        "404":
+          $ref: "#/components/responses/QuoteNotFoundResponse"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                english_quote:
+                  type: string
+                  example: "some cool quote"
+                georgian_quote:
+                  type: string
+                  example: "ციტატა"
+                img:
+                  type: string
+                  format: binary
+  /quote/{quote}:
+    delete:
+      tags:
+        - "Quotes"
+      parameters:
+        - name: quote
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Deletes a quote
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Quote deleted successfully
+        "404":
+          $ref: "#/components/responses/QuoteNotFoundResponse"
+        "401":
+          $ref: "#/components/responses/UnauthenticatedError"
+  /user-movies:
+    get:
+      tags:
+        - "Movies"
+      summary: Get all movies of current user
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: A JSON array of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
                   type: object
                   properties:
-                    quote:
+                    id:
+                      type: number
+                      example: 18
+                    title:
+                      type: object
+                      properties:
+                        en:
+                          type: string
+                          example: "Forrest Gump"
+                        ka:
+                          type: string
+                          example: "ფორესტ გამპი"
+                    description:
+                      type: object
+                      properties:
+                        en:
+                          type: string
+                          example: "Movie description"
+                        ka:
+                          type: string
+                          example: "ფილმის აღწერა"
+                    director:
+                      type: object
+                      properties:
+                        en:
+                          type: string
+                          example: "Robert Zemeckis"
+                        ka:
+                          type: string
+                          example: "რობერტ ზემეკისი"
+                    slug:
+                      type: string
+                      example: "forrest-gump"
+                    thumbnail:
+                      type: string
+                      example: "storage/movie-thumbnails/1659519781.2.png"
+                    income:
+                      type: number
+                      example: 680000000
+                    release_date:
+                      type: number
+                      example: 1994
+                    user_id:
+                      type: number
+                      example: 44
+                    author:
+                      $ref: "#/components/schemas/Author"
+                    quotes:
                       type: object
                       properties:
                         id:
                           type: number
+                          example: 14
                         user_id:
                           type: number
+                          example: 44
                         movie_id:
                           type: number
+                          example: 18
                         body:
                           type: object
+                          properties:
+                            en:
+                              type: string
+                              example: "quote"
+                            ka:
+                              type: string
+                              example: "ციტატა"
                         thumbnail:
                           type: string
-                        movie:
-                          type: object
-                          properties:
-                            id:
-                              type: number
-                            user_id:
-                              type: number
-                            title:
-                              type: object
-                            slug:
-                              type: string
-                            thumbnail:
-                              type: string
-                            release_date:
-                              type: number
-                            description:
-                              type: object
-                            director:
-                              type: object
-                            income:
-                              type: number
-                        author:
-                          $ref: "#/components/schemas/Author"
-                        comments:
-                          type: object
-                          properties:
-                            id:
-                              type: number
-                            user_id:
-                              type: number
-                            quote_id:
-                              type: number
-                            body:
-                              type: object
-                            author:
-                              $ref: "#/components/schemas/Author"
-                        likes:
-                          type: array
+                          example: "storage/quote-thumbnails/1659519790.2.png"
 
 components:
   securitySchemes:
@@ -415,3 +654,88 @@ components:
           type: string
         google_user:
           type: boolean
+    Quote:
+      type: object
+      properties:
+        id:
+          type: number
+        user_id:
+          type: number
+        movie_id:
+          type: number
+        body:
+          type: object
+        thumbnail:
+          type: string
+        movie:
+          type: object
+          properties:
+            id:
+              type: number
+            user_id:
+              type: number
+            title:
+              type: object
+            slug:
+              type: string
+            thumbnail:
+              type: string
+            release_date:
+              type: number
+            description:
+              type: object
+            director:
+              type: object
+            income:
+              type: number
+        author:
+          $ref: "#/components/schemas/Author"
+        comments:
+          type: object
+          properties:
+            id:
+              type: number
+            user_id:
+              type: number
+            quote_id:
+              type: number
+            body:
+              type: object
+            author:
+              $ref: "#/components/schemas/Author"
+        likes:
+          type: array
+          items:
+            type: object
+            $ref: "#/components/schemas/Author"
+  responses:
+    LikeQuoteResponse:
+      description: A success message
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    QuoteNotFoundResponse:
+      description: Not found error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "No query results for model [App\\Models\\Quote] 22"
+    UnauthenticatedError:
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthenticated"
