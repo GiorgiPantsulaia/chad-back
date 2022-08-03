@@ -7,6 +7,7 @@ use App\Events\PostLiked;
 use App\Http\Requests\NotificationRequests\CreateLikeNotificationRequest;
 use App\Http\Requests\QuoteRequests\CreateQuoteRequest;
 use App\Http\Requests\QuoteRequests\UpdateQuoteRequest;
+use App\Http\Resources\QuoteResource;
 use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,7 @@ class QuoteController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		return response()->json(Quote::latest()->with('movie', 'author', 'comments.author', 'likes')->paginate(5), 200);
+		return response()->json(QuoteResource::collection(Quote::latest()->paginate(5))->response()->getData(true), 200);
 	}
 
 	public function likePost(CreateLikeNotificationRequest $request, Quote $quote): JsonResponse
@@ -85,6 +86,6 @@ class QuoteController extends Controller
 
 	public function show(Quote $quote): JsonResponse
 	{
-		return response()->json($quote->load(['author', 'movie', 'comments.author', 'likes']), 200);
+		return response()->json(new QuoteResource($quote), 200);
 	}
 }

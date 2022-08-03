@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,7 +11,8 @@ class NotificationController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		return response()->json(Notification::where('recipient_id', auth()->user()->id)->with('sender', 'quote.movie')->get(), 200);
+		$notifications = Notification::where('recipient_id', auth()->user()->id)->get();
+		return response()->json(NotificationResource::collection($notifications), 200);
 	}
 
 	public function markAsRead(Request $request): JsonResponse

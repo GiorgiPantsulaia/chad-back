@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MovieRequests\CreateMovieRequest;
 use App\Http\Requests\MovieRequests\UpdateMovieRequest;
+use App\Http\Resources\MovieResource;
 use App\Models\Genre;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +21,7 @@ class MovieController extends Controller
 	public function index(): JsonResponse
 	{
 		$movies = Movie::latest()->where('user_id', auth()->user()->id)->with('quotes')->get();
-		return response()->json($movies, 200);
+		return response()->json(MovieResource::collection($movies), 200);
 	}
 
 	public function create(CreateMovieRequest $request): JsonResponse
@@ -46,9 +47,9 @@ class MovieController extends Controller
 
 	public function show(Request $request): JsonResponse
 	{
-		$movie = Movie::with(['author', 'genres', 'quotes'=>['comments.author', 'author', 'movie', 'likes']])->firstWhere('slug', $request->slug);
+		$movie = Movie::firstWhere('slug', $request->slug);
 
-		return response()->json($movie, 200);
+		return response()->json(new MovieResource($movie->load('quotes', 'genres')), 200);
 	}
 
 	public function destroy(Movie $movie): JsonResponse

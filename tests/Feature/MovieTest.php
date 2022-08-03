@@ -12,6 +12,12 @@ class MovieTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+		$this->withoutMiddleware();
+	}
+
 	/**
 	 * A basic feature test example.
 	 *
@@ -19,7 +25,6 @@ class MovieTest extends TestCase
 	 */
 	public function test_authenticated_user_can_see_genres_while_adding_movie()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		$this->actingAs($user)->get(route('genres'))->assertOk();
@@ -27,7 +32,6 @@ class MovieTest extends TestCase
 
 	public function test_user_can_see_their_movies()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		$this->actingAs($user)->get(route('user.movies'))->assertOk();
@@ -35,7 +39,6 @@ class MovieTest extends TestCase
 
 	public function test_user_can_add_movie()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		$this->actingAs($user)->post(route('post.movie'), [
@@ -52,7 +55,6 @@ class MovieTest extends TestCase
 
 	public function test_user_can_see_movie_description()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		Movie::factory()->count(1)->create(['slug'=>'slug']);
@@ -64,7 +66,6 @@ class MovieTest extends TestCase
 
 	public function test_user_can_delete_movie()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		Movie::factory()->count(1)->create(['user_id'=>$user->id]);
@@ -74,7 +75,6 @@ class MovieTest extends TestCase
 
 	public function test_user_can_edit_movie()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		Movie::factory()->count(1)->create(['user_id'=>$user->id]);

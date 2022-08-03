@@ -36,7 +36,7 @@ class UserTest extends TestCase
 		$this->actingAs($user);
 		$this->post(route('email.verification'), [
 			'token'=> 'invalid_token',
-		])->assertStatus(400);
+		])->assertStatus(500);
 	}
 
 	public function test_user_can_confirm_email()
@@ -49,7 +49,7 @@ class UserTest extends TestCase
 	public function test_user_confirm_email_failed()
 	{
 		User::factory()->count(1)->create();
-		$this->post(route('confirm.email'), ['email'=>'nonexistentemail@gmail.com'])->assertStatus(404);
+		$this->post(route('confirm.email'), ['email'=>'nonexistentemail@gmail.com'])->assertStatus(500);
 	}
 
 	public function test_user_can_reset_password()
@@ -61,17 +61,16 @@ class UserTest extends TestCase
 
 	public function test_user_reset_password_fails()
 	{
-		$this->patch(route('reset.password'), ['code'=>'invalid_token', 'password'=>'test1234', 'password_confirmation'=>'test1234'])->assertStatus(404);
+		$this->patch(route('reset.password'), ['code'=>'invalid_token', 'password'=>'test1234', 'password_confirmation'=>'test1234'])->assertStatus(500);
 	}
 
 	public function test_user_can_comment_on_post()
 	{
-		$this->withoutMiddleware();
-		User::factory()->count(1)->create(['id'=>1]);
+		$this->withoutMiddleware([Authenticate::class]);
 		Quote::factory()->count(1)->create(['user_id'=>1]);
 		$quote = Quote::first();
-		User::factory()->count(1)->create(['id'=>3]);
-		$user = User::find(3);
+		User::factory()->count(1)->create();
+		$user = User::find(2);
 		$this->actingAs($user)->post(
 			route('add.comment'),
 			[

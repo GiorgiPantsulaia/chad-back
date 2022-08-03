@@ -14,6 +14,12 @@ class QuoteTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+		$this->withoutMiddleware([Authenticate::class]);
+	}
+
 	/**
 	 * A basic feature test example.
 	 *
@@ -21,7 +27,6 @@ class QuoteTest extends TestCase
 	 */
 	public function test_user_can_get_all_quotes()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		Quote::factory()->count(10)->create();
@@ -30,7 +35,6 @@ class QuoteTest extends TestCase
 
 	public function test_user_can_like_quote()
 	{
-		$this->withoutMiddleware([Authenticate::class]);
 		User::factory()->count(1)->create();
 		Quote::factory()->count(1)->create();
 		$user = User::first();
@@ -40,7 +44,6 @@ class QuoteTest extends TestCase
 
 	public function test_user_can_unlike_quote()
 	{
-		$this->withoutMiddleware([Authenticate::class]);
 		User::factory()->count(1)->create();
 		Quote::factory()->count(1)->create();
 		$user = User::first();
@@ -51,7 +54,6 @@ class QuoteTest extends TestCase
 
 	public function test_user_can_add_quote()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		Movie::factory()->count(1)->create();
 		$user = User::first();
@@ -65,7 +67,6 @@ class QuoteTest extends TestCase
 
 	public function test_user_can_delete_quote()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		Quote::factory()->count(1)->create();
@@ -75,7 +76,6 @@ class QuoteTest extends TestCase
 
 	public function test_user_can_edit_quote()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		Quote::factory()->count(1)->create();
@@ -90,7 +90,6 @@ class QuoteTest extends TestCase
 
 	public function test_user_can_get_single_quote()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		Quote::factory()->count(1)->create();

@@ -12,6 +12,12 @@ class SearchTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+		$this->withoutMiddleware([Authenticate::class]);
+	}
+
 	/**
 	 * A basic feature test example.
 	 *
@@ -19,7 +25,6 @@ class SearchTest extends TestCase
 	 */
 	public function test_user_can_search_movies()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		Movie::factory()->count(1)->create(['title'=>['en'=>'Movie', 'ka'=>'ფილმი']]);
 		$user = User::first();
@@ -29,7 +34,6 @@ class SearchTest extends TestCase
 
 	public function test_user_can_search_quotes()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		Quote::factory()->count(1)->create(['body'=>['en'=>'quote', 'ka'=>'ციტატა']]);
 		$user = User::first();
@@ -39,7 +43,6 @@ class SearchTest extends TestCase
 
 	public function test_search_not_found()
 	{
-		$this->withoutMiddleware();
 		User::factory()->count(1)->create();
 		$user = User::first();
 		$this->actingAs($user)->post(route('search'), ['search'=>'quote without #'])

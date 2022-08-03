@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MovieResource;
+use App\Http\Resources\QuoteResource;
 use App\Models\Movie;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
@@ -15,15 +17,15 @@ class SearchController extends Controller
 		if ($request->search[0] === '@')
 		{
 			$search = substr($request->search, 1);
-			return response()->json(['movies'=> Movie::where(strtolower('title->en'), 'like', '%' . $search . '%')
-			->orWhere(strtolower('title->ka'), 'like', '%' . $search . '%')
-			->with(['author', 'genres', 'quotes'=>['comments.author', 'author', 'movie']])->get(), ], 200);
+			$movies = Movie::where(strtolower('title->en'), 'like', '%' . $search . '%')
+			->orWhere(strtolower('title->ka'), 'like', '%' . $search . '%')->get();
+			return response()->json(['movies'=> MovieResource::collection($movies->load('quotes'))], 200);
 		}
 		elseif ($request->search[0] === '#')
 		{
-			return response()->json(['quotes'=> Quote::where('body->en', 'like', '%' . $search . '%')
-			->orWhere('body->ka', 'like', '%' . $search . '%')
-			->with('movie', 'author', 'comments.author', 'likes')->get(), ], 200);
+			$quotes = Quote::where('body->en', 'like', '%' . $search . '%')
+			->orWhere('body->ka', 'like', '%' . $search . '%')->get();
+			return response()->json(['quotes'=>QuoteResource::collection($quotes)], 200);
 		}
 		else
 		{

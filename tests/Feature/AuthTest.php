@@ -15,17 +15,6 @@ class AuthTest extends TestCase
 	 *
 	 * @return void
 	 */
-	public function test_user_redirects_to_google_auth()
-	{
-		User::factory()->count(1)->create();
-		$this->post(route('redirect'))->assertOk();
-	}
-
-	// public function test_user_can_register_with_google()
-	// {
-	// 	$this->get(route('callback'))->assertRedirect();
-	// }
-
 	public function test_user_can_register()
 	{
 		$this->post(route('signup'), [

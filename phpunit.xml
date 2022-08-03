@@ -20,9 +20,6 @@
         <directory>
             ./app/Providers
         </directory>
-        <directory>
-           ./app/Http/Resources
-        </directory>
         <file>
             ./app/Console/Kernel.php
         </file>
@@ -34,6 +31,9 @@
         </file>
          <file>
             ./app/Http/Middleware/TrustHosts.php
+        </file>
+         <file>
+          ./app/Http/Controllers/OAuthController.php
         </file>
         </exclude>
     </coverage>

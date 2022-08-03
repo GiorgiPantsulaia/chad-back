@@ -67,12 +67,16 @@ paths:
               properties:
                 name:
                   type: string
+                  example: "test123"
                 email:
                   type: string
+                  example: "test@gmail.com"
                 password:
                   type: string
+                  example: "pass1234"
                 password_confirmation:
                   type: string
+                  example: "pass1234"
   /login:
     post:
       summary: Authenticates a user.
@@ -90,14 +94,14 @@ paths:
                     type: string
                   password:
                     type: string
-                # example: # Sample data
-                #   access_token: "luI1Ymbfu0lo8srrXebTL7f638coXKxztjEvFml2"
-                #   token_type: "bearer"
-                #   expires_in: 3600
-                #   username: "johndoe123"
-                #   user_email: "john@gmail.com"
-                #   user_id: 6
-                #   user_pfp: "storage/profile-pictures/1659195277.my-picture.png"
+                example: # Sample data
+                  access_token: "luI1Ymbfu0lo8srrXebTL7f638coXKxztjEvFml2"
+                  token_type: "bearer"
+                  expires_in: 3600
+                  username: "johndoe123"
+                  user_email: "john@gmail.com"
+                  user_id: 6
+                  user_pfp: "storage/profile-pictures/1659195277.my-picture.png"
 
         "401":
           description: User does not exist message
@@ -333,9 +337,81 @@ paths:
             application/json:
               schema:
                 type: array
+                items:
+                  type: object
+                  properties:
+                    quote:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        user_id:
+                          type: number
+                        movie_id:
+                          type: number
+                        body:
+                          type: object
+                        thumbnail:
+                          type: string
+                        movie:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            user_id:
+                              type: number
+                            title:
+                              type: object
+                            slug:
+                              type: string
+                            thumbnail:
+                              type: string
+                            release_date:
+                              type: number
+                            description:
+                              type: object
+                            director:
+                              type: object
+                            income:
+                              type: number
+                        author:
+                          $ref: "#/components/schemas/Author"
+                        comments:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            user_id:
+                              type: number
+                            quote_id:
+                              type: number
+                            body:
+                              type: object
+                            author:
+                              $ref: "#/components/schemas/Author"
+                        likes:
+                          type: array
 
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+        verification_code:
+          type: string
+        profile_pic:
+          type: string
+        google_user:
+          type: boolean
