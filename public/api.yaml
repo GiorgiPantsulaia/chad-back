@@ -961,6 +961,27 @@ paths:
                 email:
                   type: string
                   example: "test@gmail.com"
+  /auth-redirect:
+    post:
+      summary: Redirects user to google login page
+      responses:
+        "200":
+          description: A JSON response with redirect url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: "https://accounts.google.com/o/oauth2/auth?client_id=******.apps.googleusercontent.com&redirect_uri=&scope=openid+profile+email&response_type=code"
+  /auth-callback:
+    get:
+      summary: Logs in or registers the user
+      responses:
+        "302":
+          description: redirect user to frontend side with infos as query parameters
+
 components:
   securitySchemes:
     BearerAuth:
