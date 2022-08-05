@@ -105,7 +105,7 @@ paths:
                   username: "johndoe123"
                   user_email: "john@gmail.com"
                   user_id: 6
-                  user_pfp: "storage/profile-pictures/1659195277.my-picture.png"
+                  avatar: "storage/profile-pictures/1659195277.my-picture.png"
 
         "401":
           description: User does not exist message

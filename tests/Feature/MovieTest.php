@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Http\Resources\GenreResource;
+use App\Models\Genre;
 use App\Models\Movie;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -89,5 +91,12 @@ class MovieTest extends TestCase
 			'img'              => UploadedFile::fake()->create('test.png', $kilobytes = 0),
 			'chosen_genres'    => 'Adventure',
 		])->assertOk();
+	}
+
+	public function test_genre_resource_returns_collection()
+	{
+		$comment = Genre::factory()->count(2)->create();
+		$collect = GenreResource::collection(Genre::all())->resolve();
+		$this->assertCount(2, $collect);
 	}
 }

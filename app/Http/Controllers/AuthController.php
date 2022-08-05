@@ -73,7 +73,7 @@ class AuthController extends Controller
 			'username'     => auth()->user()->name,
 			'user_email'   => auth()->user()->email,
 			'user_id'      => auth()->user()->id,
-			'user_pfp'     => auth()->user()->profile_pic,
+			'avatar'     => auth()->user()->profile_pic,
 		], 200);
 	}
 

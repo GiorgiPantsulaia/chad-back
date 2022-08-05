@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Middleware\Authenticate;
+use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
 use App\Models\Quote;
 use App\Models\User;
@@ -97,7 +98,7 @@ class UserTest extends TestCase
 		$user = User::first();
 		Notification::factory()->count(1)->create(['recipient_id'=>$user->id]);
 		$notification = Notification::first();
-		$this->actingAs($user)->patch(route('mark.as-read'), ['id'=> $notification->id])->assertOk();
+		$this->actingAs($user)->patch(route('mark.as-read', $notification->id))->assertOk();
 	}
 
 	public function test_user_can_mark_all_notifications_as_read()
@@ -143,5 +144,12 @@ class UserTest extends TestCase
 		$this->actingAs($user)->patch(route('update.user', $user->id), [
 			'email'=> 'test1@gmail.com',
 		])->assertStatus(409);
+	}
+
+	public function test_notification_resource_returns_collection()
+	{
+		$comment = Notification::factory()->count(2)->create();
+		$collect = NotificationResource::collection(Notification::all())->resolve();
+		$this->assertCount(2, $collect);
 	}
 }
