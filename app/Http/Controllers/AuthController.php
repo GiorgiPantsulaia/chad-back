@@ -33,7 +33,10 @@ class AuthController extends Controller
 
 	public function create(RegisterRequest $request): JsonResponse
 	{
-		$user = User::create($request->validated() + ['verification_code'=>sha1(time())]);
+		$user = User::create($request->validated());
+		// prepareForValidation doesn't add verification code for user
+		$user->verification_code = sha1(time());
+		$user->save();
 
 		$this->sendVerification($user->name, $user->email, $user->verification_code);
 		return response()->json(['message'=>'Verification Email Sent!'], 201);
@@ -73,7 +76,7 @@ class AuthController extends Controller
 			'username'     => auth()->user()->name,
 			'user_email'   => auth()->user()->email,
 			'user_id'      => auth()->user()->id,
-			'avatar'     => auth()->user()->profile_pic,
+			'avatar'       => auth()->user()->profile_pic,
 		], 200);
 	}
 
