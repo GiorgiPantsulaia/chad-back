@@ -33,7 +33,7 @@ class OAuthController extends Controller
 			]);
 		}
 		$token = auth('api')->login($user);
-		$expires_in = auth('api')->factory()->getTTL() * 60;
+		$expires_in = auth('api')->factory()->getTTL() * 720;
 		$username = auth('api')->user()->name;
 		$user_email = auth('api')->user()->email;
 		$avatar = auth('api')->user()->profile_pic;
