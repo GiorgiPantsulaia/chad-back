@@ -21,6 +21,7 @@ class MovieController extends Controller
 	public function index(): JsonResponse
 	{
 		$movies = Movie::latest()->where('user_id', auth()->user()->id)->with('quotes')->get();
+		// $movies->where()
 		return response()->json(MovieResource::collection($movies), 200);
 	}
 

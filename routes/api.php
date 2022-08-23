@@ -32,7 +32,9 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::middleware(['auth:api'])->group(function () {
 	Route::post('/comments', [CommentController::class, 'create'])->name('add.comment');
+	Route::delete('/comment/{comment}', [CommentController::class, 'destroy'])->name('delete.comment');
 	Route::get('/genres', [GenreController::class, 'index'])->name('genres');
+	Route::post('/genre-movies', [GenreController::class, 'show']);
 	Route::post('/search', [SearchController::class, 'index'])->name('search');
 
 	Route::controller(QuoteController::class)->group(function () {
