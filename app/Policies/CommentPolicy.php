@@ -20,7 +20,7 @@ class CommentPolicy
 	{
 	}
 
-	public function delete(User $user, Comment $comment)
+	public function delete(User $user, Comment $comment): Response
 	{
 		return $comment->user_id === $user->id ? Response::allow() : ($comment->quote->user_id === $user->id ? Response::allow() :
 		Response::deny('You do not have permission to delete this comment.'));

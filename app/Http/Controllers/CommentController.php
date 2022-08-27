@@ -32,7 +32,7 @@ class CommentController extends Controller
 		return response()->json(['message'=>'Comment added successfully'], 200);
 	}
 
-	public function destroy(Comment $comment)
+	public function destroy(Comment $comment): JsonResponse
 	{
 		$this->authorize('delete', $comment);
 		event(new CommentDeleted($comment));
