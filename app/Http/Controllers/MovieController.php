@@ -21,7 +21,6 @@ class MovieController extends Controller
 	public function index(): JsonResponse
 	{
 		$movies = Movie::latest()->where('user_id', auth()->user()->id)->with('quotes')->get();
-		// $movies->where()
 		return response()->json(MovieResource::collection($movies), 200);
 	}
 
@@ -56,8 +55,12 @@ class MovieController extends Controller
 
 	public function destroy(Movie $movie): JsonResponse
 	{
-		$movie->delete();
-		return response()->json(['message'=>'Movie deleted successfully.'], 200);
+		if ($movie->user_id === auth()->id())
+		{
+			$movie->delete();
+			return response()->json(['message'=>'Movie deleted successfully.'], 200);
+		}
+		return response()->json(['message'=>'You do not have permission to delete this movie']);
 	}
 
 	public function update(UpdateMovieRequest $request, Movie $movie): JsonResponse
