@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NotificationController;
@@ -65,6 +66,9 @@ Route::middleware(['auth:api'])->group(function () {
 		Route::patch('/user/{user}', 'update')->name('update.user');
 		Route::patch('/update-email', 'updateEmail')->name('update.email');
 	});
+
+	Route::post('/friends/{user}', [FriendController::class, 'store'])->name('send.friend-request');
+	Route::post('/friends/accept', [FriendController::class, 'update'])->name('accept.friend-request');
 });
 
 Route::post('/auth-redirect', [OAuthController::class, 'redirect'])->name('redirect');

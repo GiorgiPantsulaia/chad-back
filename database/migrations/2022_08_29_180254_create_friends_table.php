@@ -12,10 +12,11 @@ return new class extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('user_user', function (Blueprint $table) {
+		Schema::create('friends', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('first_user_id');
-			$table->foreignId('second_user_id');
+			$table->foreignId('user_id')->constrained();
+			$table->foreignId('friend_id')->constrained('users');
+			$table->integer('accepted')->default(0);
 			$table->timestamps();
 		});
 	}
@@ -27,6 +28,6 @@ return new class extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('user_user');
+		Schema::dropIfExists('friends');
 	}
 };
