@@ -41,6 +41,7 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::controller(QuoteController::class)->group(function () {
 		Route::get('/quotes/{quote}', 'show')->name('get.quote');
 		Route::get('/all-quotes', 'index')->name('quotes');
+		Route::get('/{user}/liked-posts', 'likedPosts')->name('liked.posts');
 		Route::post('/like/{quote}', 'likePost')->name('add.like');
 		Route::post('/unlike/{quote}', 'unlikePost')->name('remove.like');
 		Route::post('/quotes', 'create')->name('post.quote');

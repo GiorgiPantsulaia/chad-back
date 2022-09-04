@@ -10,6 +10,7 @@ use App\Http\Requests\QuoteRequests\UpdateQuoteRequest;
 use App\Http\Resources\QuoteResource;
 use App\Models\Notification;
 use App\Models\Quote;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -94,5 +95,10 @@ class QuoteController extends Controller
 	public function show(Quote $quote): JsonResponse
 	{
 		return response()->json(new QuoteResource($quote->load('author', 'comments', 'likes', 'movie')), 200);
+	}
+
+	public function likedPosts(User $user)
+	{
+		return response()->json(QuoteResource::collection($user->liked_posts->load('likes', 'comments', 'author')));
 	}
 }
