@@ -25,7 +25,7 @@ class SearchController extends Controller
 		{
 			$quotes = Quote::where('body->en', 'like', '%' . $search . '%')
 			->orWhere('body->ka', 'like', '%' . $search . '%')->get();
-			return response()->json(['quotes'=>QuoteResource::collection($quotes)], 200);
+			return response()->json(['quotes'=>QuoteResource::collection($quotes->load('author', 'movie', 'likes', 'comments'))], 200);
 		}
 		else
 		{
