@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Mail\NewEmailConfirmation;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -65,5 +66,10 @@ class UserController extends Controller
 	{
 		User::where('verification_code', $request->verification_code)->update(['email'=>$request->email]);
 		return response()->json(['message'=> 'Email updated successfully'], 200);
+	}
+
+	public function show(User $user)
+	{
+		return response()->json(new UserResource($user->load('liked_posts')));
 	}
 }

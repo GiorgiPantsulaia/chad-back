@@ -16,12 +16,13 @@ class UserResource extends JsonResource
 	public function toArray($request)
 	{
 		return [
-			'id'               => $this->id,
-			'name'             => $this->name,
-			'email'            => $this->email,
-			'profile_pic'      => $this->profile_pic,
-			'google_user'      => $this->google_user,
-			'email_verified_at'=> $this->email_verified_at,
+			'id'                     => $this->id,
+			'name'                   => $this->name,
+			'email'                  => $this->email,
+			'profile_pic'            => $this->profile_pic,
+			'google_user'            => $this->google_user,
+			'email_verified_at'      => $this->email_verified_at,
+			'liked_posts'            => $this->whenLoaded('liked_posts'),
 		];
 	}
 }

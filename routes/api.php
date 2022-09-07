@@ -64,6 +64,7 @@ Route::middleware(['auth:api'])->group(function () {
 	});
 
 	Route::controller(UserController::class)->group(function () {
+		Route::get('/users/{user}', 'show')->name('get.user_data');
 		Route::patch('/user/{user}', 'update')->name('update.user');
 		Route::patch('/update-email', 'updateEmail')->name('update.email');
 	});
