@@ -75,41 +75,4 @@ class User extends Authenticatable implements JWTSubject
 	{
 		return $this->belongsToMany(Quote::class);
 	}
-
-	public function friendsTo()
-	{
-		return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
-		 ->withPivot('accepted');
-	}
-
-	public function friendsFrom()
-	{
-		return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
-		 ->withPivot('accepted');
-	}
-
-	public function friendRequestSent()
-	{
-		return $this->friendsTo()->wherePivot('accepted', false);
-	}
-
-	public function friendRequestReceived()
-	{
-		return $this->friendsFrom()->wherePivot('accepted', false);
-	}
-
-	public function acceptedOngoingRequest()
-	{
-		return $this->friendsTo()->wherePivot('accepted', true);
-	}
-
-	public function acceptedIncomingRequest()
-	{
-		return $this->friendsFrom()->wherePivot('accepted', true);
-	}
-
-	public function friends()
-	{
-		return $this->mergedRelationWithModel(User::class, 'friends_view');
-	}
 }
