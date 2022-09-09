@@ -40,6 +40,7 @@ class CommentNotificationRequest extends FormRequest
 			'user_id'   => auth()->user()->id,
 			'type'      => 'comment',
 			'state'     => 'unread',
+			'status'    => null,
 		]);
 	}
 }

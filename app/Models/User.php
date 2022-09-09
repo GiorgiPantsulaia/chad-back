@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Multicaret\Acquaintances\Traits\Friendable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
-use Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
 class User extends Authenticatable implements JWTSubject
 {
-	use HasApiTokens, HasFactory, Notifiable, HasMergedRelationships;
+	use HasApiTokens, HasFactory, Notifiable, Friendable;
 
 	/**
 	 * The attributes that are mass assignable.

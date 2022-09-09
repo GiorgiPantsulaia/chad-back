@@ -70,7 +70,7 @@ Route::middleware(['auth:api'])->group(function () {
 	});
 
 	Route::post('/friends/{user}', [FriendController::class, 'store'])->name('send.friend-request');
-	Route::post('/friends/accept', [FriendController::class, 'update'])->name('accept.friend-request');
+	Route::post('/friends/{user}/accept', [FriendController::class, 'acceptFriend'])->name('accept.friend-request');
 });
 
 Route::post('/auth-redirect', [OAuthController::class, 'redirect'])->name('redirect');

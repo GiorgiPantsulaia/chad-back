@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "942026f5baa472b98ea1409491250cd2",
+    "content-hash": "574580687c952bb7db38496060e44d87",
     "packages": [
         {
             "name": "brick/math",
@@ -1983,6 +1983,76 @@
             "time": "2022-06-09T08:59:12+00:00"
         },
         {
+            "name": "multicaret/laravel-acquaintances",
+            "version": "v3.5.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/multicaret/laravel-acquaintances.git",
+                "reference": "702e446fec8d3ac69aa88243cef247d7602989e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/multicaret/laravel-acquaintances/zipball/702e446fec8d3ac69aa88243cef247d7602989e4",
+                "reference": "702e446fec8d3ac69aa88243cef247d7602989e4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "^0.3.2",
+                "doctrine/dbal": "^2.5",
+                "fzaninotto/faker": "~1.4",
+                "laravel/laravel": "5.*",
+                "mockery/mockery": "1.0.x-dev",
+                "phpunit/phpunit": "5.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Multicaret\\Acquaintances\\AcquaintancesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Multicaret\\Acquaintances\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohamed Kawsara",
+                    "email": "mkwsra@gmail.com"
+                }
+            ],
+            "description": "This light package, with no dependencies, gives Eloquent models the ability to manage friendships (with groups). And interactions such as: Likes, favorites, votes, subscribe, follow, ..etc. And it includes advanced rating system.",
+            "keywords": [
+                "Followers",
+                "Rate",
+                "Rating",
+                "eloquent",
+                "followships",
+                "friend-system",
+                "friends",
+                "friendships",
+                "interactions",
+                "laravel",
+                "like",
+                "social-media",
+                "wish-list"
+            ],
+            "support": {
+                "issues": "https://github.com/multicaret/laravel-acquaintances/issues",
+                "source": "https://github.com/multicaret/laravel-acquaintances/tree/v3.5.6"
+            },
+            "time": "2022-02-18T05:49:20+00:00"
+        },
+        {
             "name": "namshi/jose",
             "version": "7.2.3",
             "source": {
@@ -3507,109 +3577,6 @@
                 }
             ],
             "time": "2022-03-07T13:50:51+00:00"
-        },
-        {
-            "name": "staudenmeir/laravel-merged-relations",
-            "version": "v1.5.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/staudenmeir/laravel-merged-relations.git",
-                "reference": "1da69fa8277ad198b22f592bad9db163af446d2a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/staudenmeir/laravel-merged-relations/zipball/1da69fa8277ad198b22f592bad9db163af446d2a",
-                "reference": "1da69fa8277ad198b22f592bad9db163af446d2a",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "^9.0",
-                "php": "^8.0.2",
-                "staudenmeir/laravel-migration-views": "^1.6"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^7.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Staudenmeir\\LaravelMergedRelations\\DatabaseServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Staudenmeir\\LaravelMergedRelations\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonas Staudenmeir",
-                    "email": "mail@jonas-staudenmeir.de"
-                }
-            ],
-            "description": "Merged Laravel Eloquent relationships",
-            "support": {
-                "issues": "https://github.com/staudenmeir/laravel-merged-relations/issues",
-                "source": "https://github.com/staudenmeir/laravel-merged-relations/tree/v1.5.2"
-            },
-            "time": "2022-05-17T17:48:11+00:00"
-        },
-        {
-            "name": "staudenmeir/laravel-migration-views",
-            "version": "v1.6.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/staudenmeir/laravel-migration-views.git",
-                "reference": "79bda6b8fbdff7159edc56bb88e533f8cfef2fd7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/staudenmeir/laravel-migration-views/zipball/79bda6b8fbdff7159edc56bb88e533f8cfef2fd7",
-                "reference": "79bda6b8fbdff7159edc56bb88e533f8cfef2fd7",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "^9.0",
-                "php": "^8.0.2"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^7.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Staudenmeir\\LaravelMigrationViews\\DatabaseServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Staudenmeir\\LaravelMigrationViews\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonas Staudenmeir",
-                    "email": "mail@jonas-staudenmeir.de"
-                }
-            ],
-            "description": "Laravel database migrations with SQL views",
-            "support": {
-                "issues": "https://github.com/staudenmeir/laravel-migration-views/issues",
-                "source": "https://github.com/staudenmeir/laravel-migration-views/tree/v1.6.2"
-            },
-            "time": "2022-05-15T10:08:23+00:00"
         },
         {
             "name": "stella-maris/clock",

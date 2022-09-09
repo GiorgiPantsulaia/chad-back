@@ -16,9 +16,10 @@ return new class extends Migration {
 			$table->id();
 			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
 			$table->foreignId('recipient_id')->constrained('users')->cascadeOnDelete();
-			$table->foreignId('quote_id')->constrained()->cascadeOnDelete();
+			$table->foreignId('quote_id')->nullable()->constrained()->cascadeOnDelete();
 			$table->text('type');
 			$table->text('state');
+			$table->text('status')->nullable();
 			$table->timestamps();
 		});
 	}
