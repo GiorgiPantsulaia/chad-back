@@ -68,9 +68,11 @@ Route::middleware(['auth:api'])->group(function () {
 		Route::patch('/user/{user}', 'update')->name('update.user');
 		Route::patch('/update-email', 'updateEmail')->name('update.email');
 	});
-
-	Route::post('/friends/{user}', [FriendController::class, 'store'])->name('send.friend-request');
-	Route::post('/friends/{user}/accept', [FriendController::class, 'acceptFriend'])->name('accept.friend-request');
+	Route::controller(FriendController::class)->group(function () {
+		Route::post('/friends/{user}', 'store')->name('send.friend-request');
+		Route::post('/friends/{user}/accept', 'acceptFriend')->name('accept.friend-request');
+		Route::get('/friends', 'index')->name('friends');
+	});
 });
 
 Route::post('/auth-redirect', [OAuthController::class, 'redirect'])->name('redirect');
