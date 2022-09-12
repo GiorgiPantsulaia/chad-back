@@ -22,7 +22,7 @@ class UserResource extends JsonResource
 			'profile_pic'            => $this->profile_pic,
 			'google_user'            => $this->google_user,
 			'email_verified_at'      => $this->email_verified_at,
-			'liked_posts'            => $this->whenLoaded('liked_posts'),
+			'likedPosts'             => $this->whenLoaded('likedPosts'),
 		];
 	}
 }

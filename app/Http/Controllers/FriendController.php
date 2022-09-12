@@ -40,4 +40,11 @@ class FriendController extends Controller
 
 		return response()->json('Friend request accepted successfully.');
 	}
+
+	public function unfriend(User $user): JsonResponse
+	{
+		auth()->user()->unfriend($user);
+
+		return response()->json('Friend removed successfully.');
+	}
 }

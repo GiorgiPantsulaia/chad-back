@@ -97,8 +97,8 @@ class QuoteController extends Controller
 		return response()->json(new QuoteResource($quote->load('author', 'comments', 'likes', 'movie')), 200);
 	}
 
-	public function likedPosts(User $user)
+	public function likedPosts(User $user): JsonResponse
 	{
-		return response()->json(QuoteResource::collection($user->liked_posts->load('likes', 'comments', 'author')));
+		return response()->json(QuoteResource::collection($user->likedPosts->load('likes', 'comments', 'author')));
 	}
 }

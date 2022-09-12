@@ -37,8 +37,8 @@ class RelationshipsTest extends TestCase
 		$user = User::first();
 		Quote::factory()->count(1)->create();
 		$quote = Quote::first();
-		$user->liked_posts()->attach($quote);
-		$this->assertTrue($user->liked_posts->count() > 0);
+		$user->likedPosts()->attach($quote);
+		$this->assertTrue($user->likedPosts->count() > 0);
 	}
 
 	public function test_quote_has_comments()

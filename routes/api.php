@@ -71,6 +71,7 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::controller(FriendController::class)->group(function () {
 		Route::post('/friends/{user}', 'store')->name('send.friend-request');
 		Route::post('/friends/{user}/accept', 'acceptFriend')->name('accept.friend-request');
+		Route::post('/unfriend/{user}', 'unfriend')->name('remove.friend');
 		Route::get('/friends', 'index')->name('friends');
 	});
 });

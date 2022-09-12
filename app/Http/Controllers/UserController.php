@@ -68,8 +68,9 @@ class UserController extends Controller
 		return response()->json(['message'=> 'Email updated successfully'], 200);
 	}
 
-	public function show(User $user)
+	public function show(User $user): JsonResponse
 	{
-		return response()->json(new UserResource($user->load('liked_posts')));
+		// find out friendship status for more flexibility (pending,friend or whatever)
+		return response()->json(['user'=>new UserResource($user->load('likedPosts')), 'friend'=>auth()->user()->isFriendWith($user)]);
 	}
 }
