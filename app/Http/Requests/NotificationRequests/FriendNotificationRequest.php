@@ -18,6 +18,7 @@ class FriendNotificationRequest extends FormRequest
 			'user_id'   => 'required',
 			'type'      => 'required',
 			'state'     => 'required',
+			'status'    => 'nullable',
 		];
 	}
 
