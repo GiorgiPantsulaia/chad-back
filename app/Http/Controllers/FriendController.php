@@ -34,11 +34,24 @@ class FriendController extends Controller
 	public function acceptFriend(Request $request, User $user): JsonResponse
 	{
 		auth()->user()->acceptFriendRequest($user);
+		if ($request->notificationId)
+		{
+			$notification = Notification::find($request->notificationId);
+			$notification->update(['state'=>'read', 'status'=>'accepted']);
+		}
+		return response()->json('Friend request accepted');
+	}
 
-		$notification = Notification::find($request->notificationId);
-		$notification->update(['state'=>'read', 'status'=>'accepted']);
+	public function denyFriend(Request $request, User $user): JsonResponse
+	{
+		auth()->user()->denyFriendRequest($user);
+		if ($request->notificationId)
+		{
+			$notification = Notification::find($request->notificationId);
+			$notification->update(['state'=>'read', 'status'=>'denied']);
+		}
 
-		return response()->json('Friend request accepted successfully.');
+		return response()->json('Friend request denied');
 	}
 
 	public function unfriend(User $user): JsonResponse

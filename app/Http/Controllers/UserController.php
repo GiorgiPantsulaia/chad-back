@@ -70,7 +70,7 @@ class UserController extends Controller
 
 	public function show(User $user): JsonResponse
 	{
-		// find out friendship status for more flexibility (pending,friend or whatever)
-		return response()->json(['user'=>new UserResource($user->load('likedPosts')), 'friend'=>auth()->user()->isFriendWith($user)]);
+		$pending = auth()->user()->hasFriendRequestFrom($user);
+		return response()->json(['user'=>new UserResource($user->load('likedPosts')), 'friend'=>$pending ? 'incoming' : auth()->user()->isFriendWith($user)]);
 	}
 }
