@@ -60,4 +60,9 @@ class FriendController extends Controller
 
 		return response()->json('Friend removed successfully.');
 	}
+
+	public function userFriends(User $user): JsonResponse
+	{
+		return response()->json(UserResource::collection($user->getFriends()));
+	}
 }

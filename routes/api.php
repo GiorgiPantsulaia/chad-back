@@ -73,7 +73,8 @@ Route::middleware(['auth:api'])->group(function () {
 		Route::post('/friends/{user}/accept', 'acceptFriend')->name('accept.friend_request');
 		Route::post('/friends/{user}/deny', 'denyFriend')->name('deny.friend_request');
 		Route::post('/unfriend/{user}', 'unfriend')->name('remove.friend');
-		Route::get('/friends', 'index')->name('friends');
+		Route::get('/friends', 'index')->name('my.friends');
+		Route::get('/{user}/friends', 'userFriends')->name('user.friends');
 	});
 });
 
