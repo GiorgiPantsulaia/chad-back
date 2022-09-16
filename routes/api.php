@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GenreController;
@@ -76,6 +77,8 @@ Route::middleware(['auth:api'])->group(function () {
 		Route::get('/friends', 'index')->name('my.friends');
 		Route::get('/{user}/friends', 'userFriends')->name('user.friends');
 	});
+	Route::get('messages/{user}', [ChatController::class, 'index'])->name('messages');
+	Route::post('messages/{user}', [ChatController::class, 'store'])->name('send.message');
 });
 
 Route::post('/auth-redirect', [OAuthController::class, 'redirect'])->name('redirect');

@@ -19,3 +19,6 @@ Broadcast::channel('notification.{recipient_id}', function ($user, $recipient_id
 		return true;
 	}
 });
+Broadcast::channel('messages.{sender_id}.{reciever_id}', function ($user, $sender_id, $reciever_id) {
+	return(int)$reciever_id === auth()->id();
+});
