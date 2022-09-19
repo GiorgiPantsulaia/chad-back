@@ -13,6 +13,7 @@ use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class QuoteController extends Controller
 {
@@ -62,7 +63,7 @@ class QuoteController extends Controller
 		return response()->json(['success'=>true], 200);
 	}
 
-	public function create(CreateQuoteRequest $request): JsonResponse
+	public function store(CreateQuoteRequest $request): JsonResponse
 	{
 		if ($request->img)
 		{
@@ -81,12 +82,17 @@ class QuoteController extends Controller
 
 	public function destroy(Quote $quote): JsonResponse
 	{
+		File::delete($quote->thumbnail);
 		$quote->delete();
 		return response()->json(['message'=>'Quote deleted successfully.'], 200);
 	}
 
 	public function update(UpdateQuoteRequest $request, Quote $quote): JsonResponse
 	{
+		if ($request->img)
+		{
+			File::delete($quote->thumbnail);
+		}
 		$quote->update($request->validated());
 
 		return response()->json(['message'=>'Quote updated successfully.'], 200);

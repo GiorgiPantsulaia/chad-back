@@ -24,7 +24,7 @@ class MovieController extends Controller
 		return response()->json(MovieResource::collection($movies), 200);
 	}
 
-	public function create(CreateMovieRequest $request): JsonResponse
+	public function store(CreateMovieRequest $request): JsonResponse
 	{
 		DB::transaction(
 			function () use ($request) {

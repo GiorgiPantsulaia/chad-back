@@ -45,14 +45,14 @@ Route::middleware(['auth:api'])->group(function () {
 		Route::get('/{user}/liked-posts', 'likedPosts')->name('liked.posts');
 		Route::post('/like/{quote}', 'likePost')->name('add.like');
 		Route::post('/unlike/{quote}', 'unlikePost')->name('remove.like');
-		Route::post('/quotes', 'create')->name('post.quote');
+		Route::post('/quotes', 'store')->name('post.quote');
 		Route::patch('/update-quote/{quote}', 'update')->name('update.quote');
 		Route::delete('/quote/{quote}', 'destroy')->name('delete.quote');
 	});
 
 	Route::controller(MovieController::class)->group(function () {
 		Route::get('/user-movies', 'index')->name('user.movies');
-		Route::post('/movies', 'create')->name('post.movie');
+		Route::post('/movies', 'store')->name('post.movie');
 		Route::post('/movie-description', 'show')->name('movie.description');
 		Route::patch('/edit-movie/{movie}', 'update')->name('update.movie');
 		Route::delete('/movie/{movie}', 'destroy')->name('delete.movie');
